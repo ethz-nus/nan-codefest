@@ -96,7 +96,7 @@ angular.module('starter.controllers',['ionic'])
 
 })
 
-.controller('ResultDetailCtrl', function($scope, $stateParams, Events) {
+.controller('ResultDetailCtrl', function($scope, $stateParams, Events, AccountManager) {
   $scope.event = Events.get($stateParams.eventId);
   $scope.selectedGroupIndex;
 
@@ -121,6 +121,14 @@ angular.module('starter.controllers',['ionic'])
   }
 
 
+  $scope.createGroup = function(isPrivate){
+    userId = AccountManager.getUserId();
+    Events.createGroup($scope.event, userId, isPrivate)
+  }
+
+  $scope.goSolo = function(){
+    userId = AccountManager.getUserId();
+  }
 })
 
 .controller('EventsCtrl', function($scope, AttendingEvents) {

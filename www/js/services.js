@@ -1,5 +1,16 @@
 angular.module('starter.services', [])
 
+.factory('AccountManager',function(){
+  return {
+    saveUserId:function(id){
+      window.localStorage['userid'] = id;
+    },
+    getUserId: function(){
+      return window.localStorage['userid'] || 'Alex';
+    }
+  }
+})
+
 .factory('Events', function() {
   // Might use a resource here that returns a JSON array
 
@@ -91,13 +102,17 @@ angular.module('starter.services', [])
     location:'Mulach',
     distance: 500,
     groups: [
-      {transport:'public',
-      users:['Alice', 'Bob', 'Kevin']}
-    ,
-    {
-      transport:'public',
-      users: ['Jane', 'Bryan']
-    }]
+      {
+        owner: 'Alice',
+        transport:'public',
+        users:['Alice', 'Bob', 'Kevin']}
+      ,
+      {
+        owner: 'Bryan',
+        transport:'public',
+        users: ['Jane', 'Bryan']
+      }
+    ]
 
   }];
 
@@ -116,7 +131,20 @@ angular.module('starter.services', [])
         }
       }
       return null;
+    },
+    createGroup: function(targetEvent, userID, isPrivate){
+
+      var transportType = isPrivate? 'private':'public';
+
+      var newGroup = {
+        owner: userID,
+        transport: transportType,
+        users: [userID]
+      }
+      console.log(newGroup);
+      targetEvent.groups.push(newGroup);
     }
+
   };
 })
 
