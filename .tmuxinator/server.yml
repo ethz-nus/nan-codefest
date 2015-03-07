@@ -24,7 +24,7 @@ windows:
       layout: main-vertical
       panes:
         - git pull
-        - git info
+        - git log
   - node:
       layout: main-vertical
       panes:

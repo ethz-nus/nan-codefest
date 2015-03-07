@@ -19,7 +19,7 @@ We're using Ubuntu. On a fresh installation, login as root and run
   To update tmux script, just run
 
   ```sh
-  cp -r ~/nan-codefest/.tmuxinator/server.yml ~/.tmuxinator/server.yml
+  cp ~/nan-codefest/.tmuxinator/server.yml ~/.tmuxinator/server.yml
   ```
 
 
