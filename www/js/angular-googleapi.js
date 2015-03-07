@@ -59,6 +59,26 @@ angular.module('googleApi', [])
                     gapi.auth.authorize({ client_id: config.clientId, scope: config.scopes, immediate: true }, this.handleAuthResult );
                 },
 
+                getClientEmail: function(){
+                    gapi.client.load('oauth2', 'v2', function() {
+                        gapi.client.oauth2.userinfo.get().execute(
+                            function(resp) {
+                                console.log(resp.email);
+                                deferred.resolve(resp.email);
+                            });
+                },
+
+                getClientInfo: function(){
+                    gapi.client.load('plus', 'v1', function() {
+                    gapi.client.plus.people.get( {'userId' : 'me'} ).execute(
+                        function(resp) {
+                            // Shows other profile information
+                            console.log(resp);
+                            deferred.resolve(resp);
+                        })
+                    });
+                },
+
                 handleAuthResult: function(authResult) {
                     if (authResult && !authResult.error) {
                         var data = {};
@@ -94,20 +114,20 @@ angular.module('googleApi', [])
 
     })
 
-		.service("googlePlus", function(googleApiBuilder, $rootScope) {
+	.service("googlePlus", function(googleApiBuilder, $rootScope) {
 
-				var self = this;
-				var itemExtractor = function(resp) { return resp.items; };
+			var self = this;
+			var itemExtractor = function(resp) { return resp.items; };
 
-				googleApiBuilder.afterClientLoaded(function() {
-						gapi.client.load('plus', 'v1', function() {
-							self.getPeople = googleApiBuilder.build(gapi.client.plus.people.get);
-							self.getCurrentUser = function() {
-								return self.getPeople({userId: "me"});
-							}
-							$rootScope.$broadcast("googlePlus:loaded")
-						});
+			googleApiBuilder.afterClientLoaded(function() {
+					gapi.client.load('plus', 'v1', function() {
+						self.getPeople = googleApiBuilder.build(gapi.client.plus.people.get);
+						self.getCurrentUser = function() {
+							return self.getPeople({userId: "me"});
+						}
+						$rootScope.$broadcast("googlePlus:loaded")
+					});
 
-				});
+			});
 
-		})
+	})
