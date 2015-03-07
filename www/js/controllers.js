@@ -126,6 +126,11 @@ angular.module('starter.controllers',['ionic'])
     Events.createGroup($scope.event, userId, isPrivate)
   }
 
+  $scope.deleteGroup = function(){
+    userId = AccountManager.getUserId();
+    Events.deleteGroup($scope.event, userId);
+  }
+
   $scope.goSolo = function(){
     userId = AccountManager.getUserId();
   }
