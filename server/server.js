@@ -8,7 +8,7 @@ Init Scripts
 
 var mongoose = require('mongoose');
 var express = require('express');
-var bcrypt = require('bcryptjs');
+var nodemailer = require('nodemailer');
 
 console.log("Script Initialized")
 
@@ -45,30 +45,9 @@ var userSchema = mongoose.Schema({
     locLang: Number,
     locLat: Number
   },
-  password: String,
   picture: String,
   categories: [String]
 })
-
-userSchema.pre('save', function(next) {
-  var user = this;
-  if (!user.isModified('password')) return next();
-  bcrypt.genSalt(10, function(err, salt) {
-    if (err) return next(err);
-    bcrypt.hash(user.password, salt, function(err, hash) {
-      if (err) return next(err);
-      user.password = hash;
-      next();
-    });
-  });
-});
-
-userSchema.methods.comparePassword = function(candidatePassword, cb) {
-  bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-    if (err) return cb(err);
-    cb(null, isMatch);
-  });
-};
 
 var User = mongoose.model('User', userSchema);
 
@@ -93,5 +72,7 @@ mongoose.connect(mongoUri, function(err){
   if (err) {
     console.log("Cannot connect to getaway.jellykaya.com!")
     console.log(err);
+  }else{
+    console.log("Connected to getaway.jellykaya.com")
   }
 });
