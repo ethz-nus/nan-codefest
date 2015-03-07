@@ -63,11 +63,71 @@ angular.module('starter.controllers',['ionic'])
      // $scope.centerOnMe();
 })
       
+.controller('SearchCtrl', function($scope, Events){
+    $scope.events = Events.all();
+    $scope.search = {
+      date: new Date(),
+      location: ''
+    };
 
-.controller('EventsCtrl', function($scope, Events) {
-  $scope.events = Events.all();
+    $scope.search = function(){
+
+      console.log("search");
+      $scope.filteredEvents = $scope.events.filter( function(event){
+          var dateTemp = null;
+          if ( Object.prototype.toString.call($scope.search.date) === "[object Date]" ) {
+            // it is a date
+            if ( !isNaN( $scope.search.date.getTime() ) ) {  // d.valueOf() could also work
+              // date is valid
+               dateTemp = new Date(Date.parse($scope.search.date) - Date.parse(event.time));
+            }
+          }
+          if( dateTemp != null && dateTemp.getDate() - 1 != 0)
+            return false;
+          else if (!isNaN($scope.location) && (!$scope.search.location.indexOf(event.location) ||  !event.location.indexOf($scope.search.location)) )
+            return false;
+          else if ( !isNaN($scope.category) && ($scope.search.catalog != event.catalog) )
+            return false;
+          else return true;
+        });
+      window.location.href = "#/tab/results";
+      console.log($scope.filteredEvents);
+    }
+
+})
+
+.controller('ResultDetailCtrl', function($scope, $stateParams, Events) {
+  $scope.event = Events.get($stateParams.eventId);
+  $scope.selectedGroupIndex;
+
+  $scope.print = function(array){
+    var str = ' ';
+    array.forEach(function(element, index, array){
+      str += element;
+      if(index != array.length - 1){
+        str+=", "
+      }
+    });
+    return str;
+  }
+
+  $scope.register = function(groupID){
+    $scope.selectedGroupIndex = groupID;
+  }
+
+  $scope.deregister = function(groupID){
+    console.log("deregister");
+    $scope.selectedGroupIndex = -1;
+  }
+
+
+})
+
+.controller('EventsCtrl', function($scope, AttendingEvents) {
+  $scope.events = AttendingEvents.all();
+
   $scope.remove = function(event) {
-    Events.remove(event);
+    AttendingEvents.remove(event);
   };
 
   $scope.sortByTime = function(){

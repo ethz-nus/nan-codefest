@@ -48,6 +48,36 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     }
   })
 
+  .state('tab.search', {
+    url: '/search',
+    views: {
+      'tab-search': {
+        templateUrl: 'templates/tab-search.html',
+        controller: 'SearchCtrl'
+      }
+    }
+  })
+
+  .state('tab.search-result', {
+    url: '/results',
+    views: {
+      'tab-search': {
+        templateUrl: 'templates/search-results.html',
+        controller: 'SearchCtrl'
+      }
+    }
+  })
+
+  .state('tab.result-detail', {
+    url: '/results/:eventId',
+    views: {
+      'tab-search': {
+        templateUrl: 'templates/result-detail.html',
+        controller: 'ResultDetailCtrl'
+      }
+    }
+  })
+
   .state('tab.events', {
       url: '/events',
       views: {
@@ -57,6 +87,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         }
       }
     })
+
   .state('tab.event-detail', {
       url: '/events/:eventId',
       views: {
