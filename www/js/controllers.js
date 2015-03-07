@@ -137,11 +137,39 @@ angular.module('starter.controllers',['ionic'])
 
 })
 
-.controller('ResultDetailCtrl', function($scope, $stateParams, Events, AccountManager) {
-  $scope.event = Events.get($stateParams.eventId);
-  $scope.selectedGroupIndex;
+
+.controller('EventsCtrl', function($scope, Events,  AccountManager) {
   $scope.userId = AccountManager.getUserId();
-  $scope.registeredGroup;
+  $scope.events = Events.allAttending($scope.userId);
+
+  $scope.remove = function(event) {
+    AttendingEvents.remove(event);
+  };
+
+  $scope.sortByTime = function(){
+    $scope.events.sort(function(eventA, eventB){
+      return eventA.time - eventB.time;
+    })
+  };
+
+  $scope.sortByDistance = function(eventA, eventB){
+    return eventA.distance - eventB.distance;
+  };
+
+  $scope.deregister = function(event){
+    Events.quitEvent(event, $scope.userId);
+    $scope.events = Events.allAttending($scope.userId);
+  };
+
+  $scope.sortByTime();
+})
+
+.controller('EventDetailCtrl', function($scope, $stateParams, Events, AccountManager) {
+  $scope.event = Events.get($stateParams.eventId);
+  $scope.userId = AccountManager.getUserId();
+  $scope.registeredGroup = Events.attendingGroup($scope.event, $scope.userId);
+  $scope.selectedGroupIndex = $scope.registeredGroup? $scope.event.groups.indexOf($scope.registeredGroup) : -1;
+
 
   $scope.print = function(array){
     var str = ' ';
@@ -196,31 +224,6 @@ angular.module('starter.controllers',['ionic'])
     $("#create-public-btn").attr("disabled",false);
     $("#solo-btn").attr("disabled",false);
   }
-})
-
-.controller('EventsCtrl', function($scope, Events,  AccountManager) {
-  $scope.userId = AccountManager.getUserId();
-  $scope.events = Events.allAttending($scope.userId);
-
-  $scope.remove = function(event) {
-    AttendingEvents.remove(event);
-  };
-
-  $scope.sortByTime = function(){
-    $scope.events.sort(function(eventA, eventB){
-      return eventA.time - eventB.time;
-    })
-  };
-
-  $scope.sortByDistance = function(eventA, eventB){
-    return eventA.distance - eventB.distance;
-  }
-
-  $scope.sortByTime();
-})
-
-.controller('EventDetailCtrl', function($scope, $stateParams, Events) {
-  $scope.event = Events.get($stateParams.eventId);
 })
 
 .controller('PreferenceCtrl', function($scope) {

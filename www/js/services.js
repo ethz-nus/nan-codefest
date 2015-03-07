@@ -133,14 +133,14 @@ angular.module('starter.services', [])
       {
         owner: 'Bryan',
         transport:'public',
-        users: ['Jane', 'Bryan']
+        users: ['Jane', 'Bryan', 'Tom']
       }
     ],
 
   },
   {
-    id: 4,
-    title: 'Museum visiting',
+    id: 5,
+    title: 'Museum visiting 2',
     time: new Date("April 3, 2015 18:00:00"),
     pic: 'img/events/museum.jpg',
     category: "Museum",
@@ -159,20 +159,24 @@ angular.module('starter.services', [])
       {
         owner: 'Alex',
         transport:'public',
-        users: ['Alex','Jane', 'Bryan']
+        users: ['Alex', 'Jane', 'Bryan']
       }
     ],
 
   }];
 
-  var isAttending = function(event, userId){
+  var attendingGroup = function(event,userId){
     for(var i = 0; i < event.groups.length; i++){
       var group = event.groups[i];
       if(group.users.indexOf(userId) > -1) {
-        return true;
+        return group;
       }
     }
-    return false;
+    return null;
+  }
+
+  var isAttending = function(event, userId){
+    return attendingGroup(event, userId) != null;
   };
 
   return {
@@ -195,6 +199,10 @@ angular.module('starter.services', [])
 
     isAttending: function(event, userId){
       return isAttending(event, userId);
+    },
+
+    attendingGroup: function(event, userId){
+      return attendingGroup(event, userId);
     },
 
     allAttending: function(userId){

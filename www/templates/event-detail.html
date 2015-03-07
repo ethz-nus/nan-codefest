@@ -15,6 +15,41 @@
       <article class="event-description">
         {{event.description}}
       </p>
-      </article> 
+      </article>
+
+      
+      <ion-list>
+      <ion-item class="item-remove-animate item-icon-right group-list" ng-repeat="group in event.groups track by $index" type="item-text-wrap" href="#/tab/results/{{event.id}}">
+        <!-- <img ng-src="{{event.pic}}"></img> -->
+        <div class="row">
+
+          <span class="ion-android-bus col col-10 tag" ng-if="group.transport=='public' "></span>
+          <span class="ion-android-car col col-10 tag" ng-if="group.transport=='private' "></span>
+
+          <p class="col col-80"><span>Buddies: </span>{{print(group.users)}}</p>
+      </div>
+      <div>
+        <p class="icon small" ng-if="$index==selectedGroupIndex">Joined</p>
+        <i class="icon ion-ios-checkmark-outline green" ng-click="register($index, group)" ng-if="group.owner != userId && $index!=selectedGroupIndex" ></i>
+        <i class="icon ion-ios-checkmark green" ng-click="deregister(group)" ng-if="group.owner != userId && $index == selectedGroupIndex" ></i>
+        <i class="icon ion-ios-close-outline" ng-click="deleteGroup()" ng-if="group.owner == userId" ></i>
+
+      </div>
+
+        <ion-option-button class="button-assertive" ng-click="remove(event)">
+          Delete
+        </ion-option-button>
+      </ion-item>
+    </ion-list>
+
+    <button id="create-private-btn" class="button button-block button-energized" ng-click="createGroup(true)">
+      Create Carpooling Group
+    </button> 
+    <button id="create-public-btn" class="button button-block button-balanced" ng-click="createGroup(false)">
+      Create Public Group
+    </button> 
+    <button id="solo-btn" class="button button-block button-royal" ng-click="goSolo()">
+      Go alone
+    </button>  
   </ion-content>
 </ion-view>

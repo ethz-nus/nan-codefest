@@ -73,7 +73,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     views: {
       'tab-search': {
         templateUrl: 'templates/result-detail.html',
-        controller: 'ResultDetailCtrl'
+        controller: 'EventDetailCtrl'
       }
     }
   })
