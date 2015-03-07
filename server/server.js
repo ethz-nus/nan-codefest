@@ -12,6 +12,8 @@ var bcrypt = require('bcryptjs');
 
 console.log("Script Initialized")
 
+var mongoUri = 'mongodb://getaway.jellykaya.com/test,mongodb://localhost/test'
+
 /*
 Schema Init for Database Objects
 */
@@ -33,6 +35,8 @@ var eventSchema = mongoose.Schema({
   },
   categories: [String]
 });
+
+var Event = mongoose.model('Event', eventSchema);
 
 var userSchema = mongoose.Schema({
   oauthId: Number,
@@ -81,5 +85,13 @@ var eventGroupSchema = mongoose.Schema({
   meetingTime: Date
 })
 
+var EventGroup = mongoose.model('EventGroup', eventGroupSchema);
 
-console.log("Schemas Initialized")
+console.log("Schemas Initialized");
+
+mongoose.connect(mongoUri, function(err){
+  if (err) {
+    console.log("Cannot connect to getaway.jellykaya.com!")
+    console.log(err);
+  }
+});
