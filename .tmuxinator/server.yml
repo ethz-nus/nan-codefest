@@ -34,5 +34,5 @@ windows:
       layout: main-vertical
       panes:
         - less +F ~/log/mongodb/mongodb.log
-        - sudo service mongod stop && mongod --rest --config ~/nan-codefest/server/mongodb/mongodb.yml
+        - sudo service mongod stop; mongod --rest --config ~/nan-codefest/server/mongodb/mongodb.yml
         - sleep 5 && mongo --host getaway.jellykaya.com --port 27017
