@@ -35,7 +35,7 @@ var activitySchema = mongoose.Schema({
     formattedAdd: String
   },
   categories: [String],
-  picUrl: string
+  picUrl: String
 });
 
 var Activity = mongoose.model('Activity', activitySchema);
