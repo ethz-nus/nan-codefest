@@ -35,4 +35,4 @@ windows:
       panes:
         - less +F ~/log/mongodb/mongodb.log
         - sudo service mongod stop && mongod --rest --config ~/nan-codefest/server/mongodb/mongodb.yml
-        - wait 5 && mongo --host getaway.jellykaya.com --port 27017
+        - sleep 5 && mongo --host getaway.jellykaya.com --port 27017
