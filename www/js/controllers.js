@@ -96,7 +96,8 @@ angular.module('starter.controllers',['ionic'])
     // $scope.centerOnMe();
 })
 
-.controller('SearchCtrl', function($scope, Events){
+.controller('SearchCtrl', function($scope, Events, AccountManager){
+    $scope.userId = AccountManager.getUserId();
     $scope.events = Events.all();
     $scope.search = {
       date: new Date(),
@@ -105,7 +106,6 @@ angular.module('starter.controllers',['ionic'])
 
     $scope.search = function(){
 
-      console.log("search");
       $scope.filteredEvents = $scope.events.filter( function(event){
           var dateTemp = null;
           if ( Object.prototype.toString.call($scope.search.date) === "[object Date]" ) {
@@ -127,11 +127,21 @@ angular.module('starter.controllers',['ionic'])
       console.log($scope.filteredEvents);
     }
 
+    $scope.isAttending = function(event){
+      return Events.isAttending(event, $scope.userId);
+    }
+
+    $scope.deregister = function(event){
+      Events.quitEvent(event, $scope.userId);
+    }
+
 })
 
 .controller('ResultDetailCtrl', function($scope, $stateParams, Events, AccountManager) {
   $scope.event = Events.get($stateParams.eventId);
   $scope.selectedGroupIndex;
+  $scope.userId = AccountManager.getUserId();
+  $scope.registeredGroup;
 
   $scope.print = function(array){
     var str = ' ';
@@ -144,33 +154,53 @@ angular.module('starter.controllers',['ionic'])
     return str;
   }
 
-  $scope.register = function(groupID){
-    $scope.selectedGroupIndex = groupID;
+  $scope.register = function(index, group){
+    if($scope.registeredGroup != null ){
+      $scope.deregister($scope.registeredGroup);
+    }
+    $scope.selectedGroupIndex = index;
+    Events.joinGroup($scope.event, $scope.userId, group);
+    $scope.registeredGroup = group;
   }
 
-  $scope.deregister = function(groupID){
-    console.log("deregister");
+  $scope.deregister = function(group){
     $scope.selectedGroupIndex = -1;
+    Events.quitGroup($scope.event, $scope.userId, group);
   }
 
 
   $scope.createGroup = function(isPrivate){
-    userId = AccountManager.getUserId();
-    Events.createGroup($scope.event, userId, isPrivate)
+    Events.createGroup($scope.event, $scope.userId, isPrivate);
+    $scope.disableNewGroup();
   }
 
   $scope.deleteGroup = function(){
-    userId = AccountManager.getUserId();
-    Events.deleteGroup($scope.event, userId);
+    Events.deleteGroup($scope.event, $scope.userId);
+    $scope.enableNewGroup();
   }
 
   $scope.goSolo = function(){
-    userId = AccountManager.getUserId();
+    $scope.disableNewGroup();
+  }
+
+  $scope.disableNewGroup = function(){
+    $scope.deregister($scope.registeredGroup);
+    $scope.selectedGroupIndex = -1;
+    $("#create-private-btn").attr("disabled",true);
+    $("#create-public-btn").attr("disabled",true);
+    $("#solo-btn").attr("disabled",true);
+  }
+
+  $scope.enableNewGroup = function(){
+    $("#create-private-btn").attr("disabled",false);
+    $("#create-public-btn").attr("disabled",false);
+    $("#solo-btn").attr("disabled",false);
   }
 })
 
-.controller('EventsCtrl', function($scope, AttendingEvents) {
-  $scope.events = AttendingEvents.all();
+.controller('EventsCtrl', function($scope, Events,  AccountManager) {
+  $scope.userId = AccountManager.getUserId();
+  $scope.events = Events.allAttending($scope.userId);
 
   $scope.remove = function(event) {
     AttendingEvents.remove(event);

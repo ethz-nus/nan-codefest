@@ -1,14 +1,15 @@
 <ion-view view-title="Search Results">
   <ion-content>
-    <ion-list>
+    <ion-list id="result-list">
       <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="event in events" type="item-text-wrap" href="#/tab/results/{{event.id}}">
         <img ng-src="{{event.pic}}">
         <h2>{{event.title}}</h2>
         <p>{{event.time | date: 'MMM dd h:mma'}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
+        <i class="icon ion-checkmark-round icon-accessory" ng-if="isAttending(event)"></i>
 
-        <ion-option-button class="button-assertive" ng-click="remove(event)">
-          Delete
+        <ion-option-button class="button-assertive" ng-click="deregister(event)" ng-if="isAttending(event)">
+          Cancel
         </ion-option-button>
       </ion-item>
     </ion-list>

@@ -33,6 +33,12 @@
 	margin: 30px auto;
 }
 
+#result-list .ion-checkmark-round{
+	right:40px;
+	font-size: 30px;
+	color:green;
+}
+
 .group-list .tag{ 
 	font-size: 30px;
 	color: #387ef5;
@@ -53,6 +59,9 @@
 	color: green;
 }
 
+.ion-ios-close-outline{
+	color: #FF4938;
+}
 
 /*Events*/
 .event-profile .padding{
