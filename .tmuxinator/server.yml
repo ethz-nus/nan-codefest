@@ -1,9 +1,9 @@
-# ~/.tmuxinator/node.yml
+# ~/.tmuxinator/server.yml
 
-name: node
+name: server
 root: ~/
 
-# Optional tmux socket
+# Optional. tmux socket
 # socket_name: foo
 
 # Runs before everything. Use it to start daemons etc.
@@ -18,13 +18,14 @@ root: ~/
 # Change the command to call tmux.  This can be used by derivatives/wrappers like byobu.
 # tmux_command: byobu
 
-# Specifies (by name or index) which window will be selected on project startup. If not set, the first window is used.
-# startup_window: logs
 
 windows:
   - server:
-      layout: main-vertical
-      panes:
-        - sudo service mongod start
-        - cd ~/nan-codefest && node ~/rfidquizstash/website/server.js
-
+    layout: tiled
+    panes:
+      - cd ~/nan-codefest && node server/server.js
+      - cd ~/nan-codefest && sudo service mongod start
+  - git:
+    layout: tiled
+    panes:
+      - cd ~/nan-codefest && git pull

@@ -10,9 +10,18 @@ We're using Ubuntu. On a fresh installation, login as root and run
 
 ## Webapp
 
+  We maintain a tmux instance. This script should run at startup via cron
+
   ```sh
-  node server/server.js
+  tmuxinator start server
   ```
+
+  To update tmux script, just run
+
+  ```sh
+  cp -r ~/nan-codefest/.tmuxinator/server.yml ~/.tmuxinator/server.yml
+  ```
+
 
 ## Testing
 
