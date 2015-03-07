@@ -1,7 +1,7 @@
 # ~/.tmuxinator/server.yml
 
 name: server
-root: ~/
+root: ~/nan-codefest
 
 # Optional. tmux socket
 # socket_name: foo
@@ -23,9 +23,11 @@ windows:
   - server:
       layout: main-vertical
       panes:
-        - cd ~/nan-codefest && nodejs server/server.js
-        - cd ~/nan-codefest && sudo service mongod start
+        - nodejs server/server.js | tee
+        - sudo service mongod start && mongod --rest --config ~/nan-codefest/server/mongodb/mongodb.yml
+        - mongo --host getaway.jellykaya.com --port 27017
   - git:
       layout: main-vertical
       panes:
-        - cd ~/nan-codefest && git pull
+        - git pull
+        - git info
