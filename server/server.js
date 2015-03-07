@@ -234,12 +234,12 @@ io.on('connection', function (socket) {
     ActivityGroup.find({
       activityId: query.activityId,
       transport: query.transport
-    }.exec(function(err, activityGroup){
+    }).exec(function(err, activityGroup){
       activityGroups.push(activityGroup);
     });
     socket.emit('receiveActivityGroups', activityGroups);
   });
-  
+
   //Signal closure of socket
   socket.on('disconnect', function(){
     console.log("Socket closed");
