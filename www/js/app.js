@@ -106,6 +106,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         controller: 'PreferenceCtrl'
       }
     }
+  })
+
+  .state('tab.time-to-location', {
+    url: '/time-to-location',
+    views: {
+      'tab-time-to-location': {
+        templateUrl: 'templates/time-to-location.html',
+        controller: 'TTLCtrl'
+      }
+    }
   });
 
   // if none of the above states are matched, use this as the fallback
