@@ -24,7 +24,8 @@ echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.
 sudo apt-get install -y mongodb-org
 
 mkdir ~/.tmuxinator
-cp -r ~/nan-codefest/.tmuxinator/* ~/.tmuxinator
+cp ~/nan-codefest/.tmuxinator/server.yml ~/.tmuxinator/server.yml
+cp ~/nan-codefest/.tmuxinator/tmux.conf ~/.tmux.conf
 
 cd ~
 mkdir .bin
