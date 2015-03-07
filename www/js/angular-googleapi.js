@@ -66,6 +66,7 @@ angular.module('googleApi', [])
                                 console.log(resp.email);
                                 deferred.resolve(resp.email);
                             });
+                    })
                 },
 
                 getClientInfo: function(){

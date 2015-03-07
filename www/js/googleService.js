@@ -1,4 +1,4 @@
-angular.module('google.service', ["googleApi"])
+angular.module('google.service', ['googleApi'])
     .config(function(googleLoginProvider) {
         googleLoginProvider.configure({
             clientId: '892332260770-oq10pm310ql31ug3gd0fq23sq9slc658.apps.googleusercontent.com',
