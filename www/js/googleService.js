@@ -1,11 +1,11 @@
-angular.module('google', ["googleApi"])
+angular.module('google.service', ["googleApi"])
     .config(function(googleLoginProvider) {
         googleLoginProvider.configure({
             clientId: '892332260770-oq10pm310ql31ug3gd0fq23sq9slc658.apps.googleusercontent.com',
             scopes: ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/calendar", "https://www.googleapis.com/auth/plus.login"]
         });
     })
-    .controller('googleCtrl', ['$scope', 'googleLogin', 'googleCalendar', 'googlePlus', function ($scope, googleLogin, googleCalendar, googlePlus) {
+    .factory('googleCtrl', ['$scope', 'googleLogin', 'googleCalendar', 'googlePlus', function ($scope, googleLogin, googleCalendar, googlePlus) {
 
         $scope.login = function () {
             googleLogin.login();
