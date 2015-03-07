@@ -16,27 +16,34 @@ console.log("Script Initialized")
 Schema Init for Database Objects
 */
 
+
+/*
+Google Geocoding API
+https://developers.google.com/maps/documentation/geocoding/#JSON
+*/
+
 var eventSchema = mongoose.Schema({
-  startTime: Number,
-  endTime: ,
   eventId: String,
-  location: Number,
-  categories: [String],
-  cost:
+  startTime: Date,
+  endTime: Date,
+  loc: {
+    locLong: Number,
+    locLat: Number,
+    locFormattedAdd: String
+  },
+  categories: [String]
 });
 
 var userSchema = mongoose.Schema({
   oauthId: Number,
   email: { type: String, unique: true },
-  lastKnownLocation: ,
+  lastKnownLoc: {
+    locLang: Number,
+    locLat: Number
+  },
   password: String,
   picture: String,
-  categories: [String],
-
-})
-
-var eventGroupSchema = mongoose.Schema({
-  
+  categories: [String]
 })
 
 userSchema.pre('save', function(next) {
@@ -52,6 +59,27 @@ userSchema.pre('save', function(next) {
   });
 });
 
+userSchema.methods.comparePassword = function(candidatePassword, cb) {
+  bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+    if (err) return cb(err);
+    cb(null, isMatch);
+  });
+};
+
+var User = mongoose.model('User', userSchema);
+
+var eventGroupSchema = mongoose.Schema({
+  groupName: String,
+  eventId: String,
+  groupOwnerId: Number,
+  groupMemberId: [Number],
+  meetingLoc: {
+    locLong: Number,
+    locLat: Number,
+    locFormattedAdd: String
+  },
+  meetingTime: Date
+})
 
 
 console.log("Schemas Initialized")
