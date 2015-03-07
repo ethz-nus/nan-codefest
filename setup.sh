@@ -1,6 +1,6 @@
 apt-get update
 apt-get upgrade
-apt-get install zsh git
+apt-get install zsh git nodejs
 
 chsh -s /usr/bin/zsh
 

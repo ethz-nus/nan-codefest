@@ -1,2 +1,5 @@
+#ignore Playpen
+/Playpen
+
 #ignore .DS_Store
 .DS_Store
