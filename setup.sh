@@ -1,3 +1,7 @@
+#!/bin/zsh
+#Workaround for
+sudo add-apt-repository ppa:pg-radadia/tmux-stable
+
 apt-get update
 apt-get upgrade
 apt-get install zsh git nodejs npm ruby
@@ -18,4 +22,10 @@ echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.
 
 sudo apt-get install -y mongodb-org
 
+
 cp -r ~/nan-codefest/.tmuxinator/* ~/.tmuxinator
+
+cd ~
+mkdir .bin
+cd ~/.bin
+curl -O https://github.com/tmuxinator/tmuxinator/raw/master/bin/tmuxinator
