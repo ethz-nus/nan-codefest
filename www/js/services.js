@@ -11,6 +11,8 @@ angular.module('starter.services', [])
     pic: 'img/events/music.jpg',
     catalog: "Festival",
     url:"www.google.com",
+    latitude: 47.367995,
+    longitude: 8.539960,
     description: "dummy blahblahblah....",
     distance: 200
   }, {
@@ -20,6 +22,8 @@ angular.module('starter.services', [])
     pic: 'img/events/art.jpg',
     catalog: "Art",
     url:"www.google.com",
+    latitude: 47.366018,
+    longitude: 8.518546,
     description: "dummy blahblahblah....",
     distance: 5000
   }, {
@@ -29,6 +33,8 @@ angular.module('starter.services', [])
     pic: 'img/events/parade.jpg',
     catalog: "Festival",
     url:"www.google.com",
+    latitude: 47.400063,
+    longitude: 8.397846,
     description: "dummy blahblahblah....",
     distance: 1000
   }, {
@@ -38,6 +44,8 @@ angular.module('starter.services', [])
     pic: 'img/events/marathon.jpeg',
     catalog: "Sports",
     url:"www.google.com",
+    latitude: 47.166143,
+    longitude: 8.526764,
     description: "dummy blahblahblah....",
     distance: 300
   }, {
@@ -47,6 +55,8 @@ angular.module('starter.services', [])
     pic: 'img/events/museum.jpg',
     catalog: "Museum",
     url:"www.google.com",
+    latitude: 47.484497,
+    longitude: 8.738251,
     description: "dummy blahblahblah....",
     distance: 500
   }];
@@ -70,28 +80,36 @@ angular.module('starter.services', [])
 })
 
 .factory('TimeToLocation', function(){
-    //var googleMapsApiKey =  "AIzaSyB8uRZiApFctskQvdpS9eYmbZPdVmUQG8Y";
+    
+    var distanceService = new google.maps.DistanceMatrixService();
 
     return {
         getPublicTransportTime:
-        function(userLat, userLong, dest, timeOfDay, callback){
-          var distanceService = new google.maps.DistanceMatrixService();
-          distanceService.getDistanceMatrix(
-            {
-              origins: [userLat + ',' + userLong],
-              destinations: [dest],
-              travelMode: google.maps.TravelMode.TRANSIT,
-              transitOptions: {departureTime: timeOfDay}
-            }, function(data, stat){
-              callback(data, stat);
-            } 
-          );
-        }
-           
-    }
-    /*getDrivingTime:
-    function(userLat, userLong, dest, timeOfDay){
+          function (userLat, userLong, dest, arrivalTime, callback){
+            distanceService.getDistanceMatrix(
+              {
+                origins: [userLat + ',' + userLong],
+                destinations: [dest],
+                travelMode: google.maps.TravelMode.TRANSIT,
+                transitOptions: {arrivalTime: arrivalTime}
+              }, function(data, stat){
+                callback(data, stat);
+              } 
+            );
+          },
 
-}
-}*/
+        getDrivingTime:
+          function (userLat, userLong, dest, arrivalTime, callback){
+            distanceService.getDistanceMatrix(
+              {
+                origins: [userLat + ',' + userLong],
+                destinations: [dest],
+                travelMode: google.maps.TravelMode.DRIVING,
+                transitOptions: {arrivalTime: arrivalTime}
+              }, function(data, stat){
+                callback(data, stat);
+              }
+            );
+          }   
+    }
 });
