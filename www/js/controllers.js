@@ -112,15 +112,19 @@ angular.module('starter.controllers',['ionic'])
 
     $scope.getTimeToLocation = function(){
         //var dest = $stateParams.destination;
-        var dest = "Seebach"
+        var dest = "Seebach, Zurich"
         var time;
         //if($stateParams.departureTime){
         //  time = $stateParams.departureTime;
         //} else {
-        time = 'now';
+        time = new Date();
         //}
         //if($stateParams.transitPreferences === 'public'){
-        $scope.result = TimeToLocation.getPublicTransportTime(lat, lon, dest, time);
+        TimeToLocation.getPublicTransportTime
+          (lat, lon, dest, time, function(data, stat){
+            $scope.result = data;
+            $scope.$apply();
+          });
         //} else if ($stateParams.transitPreferences === 'driving'){
         //  return TimeToLocation.getDrivingTime(lat, lon, dest, time);
         //} else if ($stateParams.transitPreferences === 'uber'){
