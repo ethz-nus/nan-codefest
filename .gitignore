@@ -3,3 +3,8 @@
 
 #ignore .DS_Store
 .DS_Store
+
+#ignore Ionic/Cordova Stuff
+/app/node_modules/
+/app/platforms/
+/app/plugins/
