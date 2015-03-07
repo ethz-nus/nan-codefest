@@ -5,6 +5,7 @@ sudo add-apt-repository ppa:pg-radadia/tmux-stable
 apt-get update
 apt-get upgrade
 apt-get install zsh git nodejs npm ruby
+apt-get install nodejs-legacy
 
 chsh -s /usr/bin/zsh
 
@@ -29,3 +30,9 @@ cd ~
 mkdir .bin
 cd ~/.bin
 curl -O https://github.com/tmuxinator/tmuxinator/raw/master/bin/tmuxinator
+
+mkdir ~/mongodb
+mkdir ~/mongodb/db
+mkdir ~/log/
+mkdir ~/log/mongodb/
+mkdir ~/log/nodejs

@@ -20,14 +20,19 @@ root: ~/nan-codefest
 
 
 windows:
-  - server:
-      layout: main-vertical
-      panes:
-        - nodejs server/server.js | tee
-        - sudo service mongod start && mongod --rest --config ~/nan-codefest/server/mongodb/mongodb.yml
-        - mongo --host getaway.jellykaya.com --port 27017
   - git:
       layout: main-vertical
       panes:
         - git pull
         - git info
+  - node:
+      layout: main-vertical
+      panes:
+        - npm install && nodejs server/server.js | tee ~/log/nodejs/webapp.log
+        - less +F ~/log/mongodb/mongodb.log
+  - mongo:
+      layout: main-vertical
+      panes:
+        - less +F ~/log/mongodb/mongodb.log
+        - sudo service mongod stop && mongod --rest --config ~/nan-codefest/server/mongodb/mongodb.yml
+        - wait 5 && mongo --host getaway.jellykaya.com --port 27017

@@ -10,6 +10,7 @@
 /node_modules/
 /platforms/
 /plugins/
+/npm-debug.log
 
 #ignores all config.json
 .config.json
