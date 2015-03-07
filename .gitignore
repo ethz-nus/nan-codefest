@@ -8,3 +8,6 @@
 /node_modules/
 /platforms/
 /plugins/
+
+#ignores all config.json
+.config.json
