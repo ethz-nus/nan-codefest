@@ -1,0 +1,17 @@
+#ignore Playpen
+/Playpen
+
+#ignore .DS_Store
+.DS_Store
+
+#ignore Ionic/Cordova Stuff
+/node_modules/
+/platforms/
+/plugins/
+
+#ignores all config.json
+.config.json
+
+#ignores old folder
+/app
+/plugins

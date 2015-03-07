@@ -1,0 +1,50 @@
+/* Empty. Add your own CSS if you like */
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+.scroll {
+  height: 100%;
+}
+
+#search-form {
+	position: absolute;
+	top:50px;
+	z-index: 10;
+	margin:0 auto;
+
+}
+
+/*Events*/
+.padding{
+	padding-top: 5px;
+}
+
+.event-profile{
+	width: 100%;
+}
+
+
+.event-caption{
+	font-size: 20;
+	font-weight: bold;
+	color: white;
+	padding: 0 0 0 0;
+}
+
+.event-catalog{
+	margin-right: 5px;
+	color: white;
+	background-color: orange;
+}
+
+.event-date{
+	background-color: #FF4938;
+}
+
+.event-description{
+	background-color: #9FB9FF;
+	min-height: 60px;
+}
