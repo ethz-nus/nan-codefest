@@ -5,6 +5,6 @@
 .DS_Store
 
 #ignore Ionic/Cordova Stuff
-/app/node_modules/
-/app/platforms/
-/app/plugins/
+/node_modules/
+/platforms/
+/plugins/
