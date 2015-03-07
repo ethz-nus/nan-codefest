@@ -63,7 +63,8 @@ var activityGroupSchema = mongoose.Schema({
     latitude: Number,
     formattedAdd: String
   },
-  meetingTime: Date
+  meetingTime: Date,
+  transport: String
 })
 
 var ActivityGroup = mongoose.model('ActivityGroup', activityGroupSchema);
@@ -183,123 +184,62 @@ io.on('connection', function (socket) {
     });
     socket.broadcast.emit('updateActivity', newActivity);
   });
+  socket.on('getActivities', function(){
+    var activities = [];
+    Activity.find({}).exec(function(err, activity){
+      activities.push(activity);
+    });
+    socket.emit('receiveActivities', activities);
+  });
 
   /*
   ActivityGroup related Listeners
   */
 
   socket.on('addActivityGroup', function(newActivityGroup){
-    newActivityGroup
+    newActivityGroup = sanitiseInput(newActivityGroup);
+    new ActivityGroup({
+      groupName: newActivityGroup.groupName,
+      activityId: newActivityGroup.activityId,
+      groupOwnerId: newActivityGroup.groupOwnerId,
+      groupMemberId: newActivityGroup.groupMemberId,
+      meetingLoc: {
+        longitude: newActivityGroup.meetingLoc.longitude,
+        latitude: newActivityGroup.meetingLoc.latitude,
+        formattedAdd: newActivityGroup.meetingLoc.formattedAdd
+      },
+      meetingTime: newActivityGroup.meetingTime,
+      transport: newActivityGroup.transport
+    }).save(function(err){
+      if (err) {
+        console.log("Error in saving activity group");
+        console.log(err);
+      };
+    });
+    socket.broadcast.emit('addActivityGroup', newActivity);
   });
   socket.on('updateActivityGroup', function(newActivityGroup){
-
-  });
-
-
-
-
-
-
-
-  socket.on('updateQuiz', function (quizUpdate) {
-    quiz
-    //console.log(dbQuizUpdate);
-    Quiz.update({ _id: quizUpdate._id }, dbQuizUpdate, function(err, numberAffected, raw) {
-      if (err) return console.log(err);
-      //console.log('Number of affected documents was %d', numberAffected);
-      //console.log('Raw response from MongoDB: ', raw);
-    });
-    socket.broadcast.emit('updateQuiz', quizUpdate);
-    console.log("Quiz Updated");
-  });
-  socket.on('initQuizState', function (quizState) {
-    socket.broadcast.emit('initQuizState', {
-      quizID : quizState.quizId,
-      time : quizState.timeleft,
-      timer : "paused",
-      machineId: quizState.machineId,
-      authorId : quizState.authorId
-    });
-    console.log("Quiz State written to " + quizState.machineId);
-  });
-
-  //DB functions
-  socket.on('readCard', function (quizState) {
-    // receive from client to get nodes to read card
-    socket.broadcast.emit('readCard', {
-      quizId : quizState.quizId,
-      quesitonId : quizState.questionId,
-      machineId : quizState.machineId,
-      authorId : quizState.authorId
-    });
-    console.log("Card Read Requested at " + quizState.machineId );
-  });
-  socket.on('setCard', function (cardData) {
-    // Card Data coming from Node
-    /*
-    Test Case
-    ioSocketClientServer.emit('setCard', { quizId : 'blah3', questionId : 2, memberName : "noob", teamNumber : 1, answerNumber : 2});
-
-    */
-    // STEP 1: store to DB
-    console.log(cardData);
-    if (cardData == null || cardData == undefined) {return}
-    var newAnswer = new Answer({
-      timestamp : new Date().getTime(),
-      quizId : cardData.quizId,
-      questionId : cardData.questionId,
-      memberName : cardData.memberName,
-      teamNumber : cardData.teamNumber,
-      answerNumber : cardData.answerNumber
-    })
-    newAnswer.save(function(err){
-      if (err) return next(err);
-    })
-    socket.broadcast.emit('answerRead', {
-      // STEP 2: To display which team answered, and how long it took them to answer
-      //For Client
-      quizId : cardData.quizId,
-      questionId : cardData.questionId,
-      teamNumber: cardData.teamNumber,
-      name : cardData.memberName
-    });
-    console.log("read card to DB");
-  });
-  socket.on('readFromDB', function (quizState) {
-    var answerMatrix = [];
-    for (var teamNo = 0; teamNo < quizState.noOfTeams; teamNo++){
-      Answer.find({
-        quizId : quizState.quizId,
-        questionId : quizState.questionId,
-        teamNumber : teamNo
-      }).sort({timestamp:-1}).limit(1).exec(function (err, answer){
-        answerMatrix.push(answer);
+    newActivityGroup = sanitiseInput(newActivityGroup);
+    ActivityGroup.update({ groupName: newActivityGroup.groupName },
+      newActivityGroup, function(err, elementsChanged, rawMongoOutput){
+        if (err) {
+          console.log("Error in saving activity group");
+          console.log(err);
+        }
       });
-    }
-    socket.broadcast.emit('dataFromDB', answerMatrix);
-    console.log("Answers sent");
+    socket.broadcast.emit('updateActivityGroup', newActivity);
   });
-
-  //Card Reader Functions
-  socket.on('writeCard', function (cardData) {
-    socket.broadcast.emit('writeCard', {
-      memberName : cardData.memberName,
-      team : cardData.team,
-      answer : cardData.answer,
-      machineId : cardData.machineId
+  socket.on('getActivityGroup', function(query){
+    var activityGroups = [];
+    ActivityGroup.find({
+      activityId: query.activityId,
+      transport: query.transport
+    }.exec(function(err, activityGroup){
+      activityGroups.push(activityGroup);
     });
-    console.log("Card write request sent");
+    socket.emit('receiveActivityGroups', activityGroups);
   });
-
-
-
-  //Other functions
-  socket.on('backupCallback', function (callback) {
-    console.log(callback);
-    callback();
-  });
-
-
+  
   //Signal closure of socket
   socket.on('disconnect', function(){
     console.log("Socket closed");
