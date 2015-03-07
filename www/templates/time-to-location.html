@@ -1,0 +1,19 @@
+<!--
+  This template loads for the 'tab.time-to-location' state (app.js)
+  The TTLCtrl pulls data from the TimeToLocation service (service.js)
+  The TimeToLocation service returns something
+-->
+<ion-view view-title="{{result.destination_addresses[0]}}">
+  <ion-content class="padding">
+    <p>
+      {{result.status}}
+    </p>
+    <p>
+        <h3>Time</h3>
+        {{result.rows[0].elements[0].duration.text}}
+    </p>
+    <button class="button button-calm" ng-click="getTimeToLocation()">
+      Time To Seebach
+    </button>
+  </ion-content>
+</ion-view>

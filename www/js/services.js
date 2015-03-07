@@ -11,6 +11,8 @@ angular.module('starter.services', [])
     pic: 'img/events/music.jpg',
     category: "Festival",
     url:"www.google.com",
+    latitude: 47.367995,
+    longitude: 8.539960,
     description: "dummy blahblahblah....",
     location:'Oerlikon',
     distance: 200,
@@ -29,6 +31,8 @@ angular.module('starter.services', [])
     pic: 'img/events/art.jpg',
     category: "Art",
     url:"www.google.com",
+    latitude: 47.366018,
+    longitude: 8.518546,
     description: "dummy blahblahblah....",
     location:'ETH',
     distance: 5000,
@@ -43,6 +47,8 @@ angular.module('starter.services', [])
     pic: 'img/events/parade.jpg',
     category: "Festival",
     url:"www.google.com",
+    latitude: 47.40063,
+    longitude: 8.397846,
     description: "dummy blahblahblah....",
     location:'HB',
     distance: 1000,
@@ -61,6 +67,8 @@ angular.module('starter.services', [])
     pic: 'img/events/marathon.jpeg',
     category: "Sports",
     url:"www.google.com",
+    latitude: 47.166143,
+    longitude: 8.526764,
     description: "dummy blahblahblah....",
     location:'UZH',
     distance: 300,
@@ -87,6 +95,8 @@ angular.module('starter.services', [])
     pic: 'img/events/museum.jpg',
     category: "Museum",
     url:"www.google.com",
+    latitude: 47.484497,
+    longitude: 8.738251,
     description: "dummy blahblahblah....",
     location:'Mulach',
     distance: 500,
@@ -141,6 +151,8 @@ angular.module('starter.services', [])
     pic: 'img/events/art.jpg',
     category: "Art",
     url:"www.google.com",
+    latitude: 47.366018,
+    longitude: 8.518546,
     description: "dummy blahblahblah....",
     location:'ETH',
     distance: 5000
@@ -151,6 +163,8 @@ angular.module('starter.services', [])
     pic: 'img/events/parade.jpg',
     category: "Festival",
     url:"www.google.com",
+    latitude: 47.400063,
+    longitude: 8.397846,
     description: "dummy blahblahblah....",
     location:'HB',
     distance: 1000
@@ -161,6 +175,8 @@ angular.module('starter.services', [])
     pic: 'img/events/marathon.jpeg',
     category: "Sports",
     url:"www.google.com",
+    latitude: 47.166143,
+    longitude: 8.526764,
     description: "dummy blahblahblah....",
     location:'UZH',
     distance: 300
@@ -171,6 +187,8 @@ angular.module('starter.services', [])
     pic: 'img/events/museum.jpg',
     category: "Museum",
     url:"www.google.com",
+    latitude: 47.484497,
+    longitude: 8.738251,
     description: "dummy blahblahblah....",
     location:'Mulach',
     distance: 500
@@ -193,5 +211,40 @@ angular.module('starter.services', [])
       return null;
     }
   };
+})
+
+.factory('TimeToLocation', function(){
+    
+    var distanceService = new google.maps.DistanceMatrixService();
+
+    return {
+        getPublicTransportTime:
+          function (userLat, userLong, dest, arrivalTime, callback){
+            distanceService.getDistanceMatrix(
+              {
+                origins: [userLat + ',' + userLong],
+                destinations: [dest],
+                travelMode: google.maps.TravelMode.TRANSIT,
+                transitOptions: {arrivalTime: arrivalTime}
+              }, function(data, stat){
+                callback(data, stat);
+              } 
+            );
+          },
+
+        getDrivingTime:
+          function (userLat, userLong, dest, arrivalTime, callback){
+            distanceService.getDistanceMatrix(
+              {
+                origins: [userLat + ',' + userLong],
+                destinations: [dest],
+                travelMode: google.maps.TravelMode.DRIVING,
+                transitOptions: {arrivalTime: arrivalTime}
+              }, function(data, stat){
+                callback(data, stat);
+              }
+            );
+          }   
+    }
 });
 
