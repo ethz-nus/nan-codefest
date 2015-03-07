@@ -28,7 +28,7 @@ windows:
   - node:
       layout: main-vertical
       panes:
-        - npm install && nodejs server/server.js | tee ~/log/nodejs/webapp.log
+        - npm install; nodejs server/server.js | tee ~/log/nodejs/webapp.log
         - less +F ~/log/mongodb/mongodb.log
   - mongo:
       layout: main-vertical

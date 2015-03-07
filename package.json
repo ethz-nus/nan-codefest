@@ -10,7 +10,7 @@
     "gulp-rename": "^1.2.0",
     "mongoose": "^3.8.21",
     "express": "^4.11.0",
-    "bcryptjs": "^0.8.1",
+    "bcryptjs": "^2.1.0",
     "config.json": "^0.0.3"
   },
   "devDependencies": {
