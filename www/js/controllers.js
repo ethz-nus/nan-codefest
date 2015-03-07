@@ -110,7 +110,7 @@ angular.module('starter.controllers',['ionic'])
         }
     }
 
-    $scope.getTimeToLocation = function($scope){
+    $scope.getTimeToLocation = function(){
         //var dest = $stateParams.destination;
         var dest = "Seebach"
         var time;
@@ -121,7 +121,6 @@ angular.module('starter.controllers',['ionic'])
         //}
         //if($stateParams.transitPreferences === 'public'){
         $scope.result = TimeToLocation.getPublicTransportTime(lat, lon, dest, time);
-        $scope.$apply();
         //} else if ($stateParams.transitPreferences === 'driving'){
         //  return TimeToLocation.getDrivingTime(lat, lon, dest, time);
         //} else if ($stateParams.transitPreferences === 'uber'){
