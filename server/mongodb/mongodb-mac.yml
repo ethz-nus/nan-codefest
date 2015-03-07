@@ -12,7 +12,5 @@ net:
       RESTInterfaceEnabled: true
 storage:
    dbPath: "/Users/jellyrobot/mongodb/db"
-   smallFiles: true
    journal:
       enabled: true
-      commitIntervalMs: 100
