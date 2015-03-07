@@ -16,5 +16,7 @@
 /app
 /plugins
 
-#ignoree all vim swap files
-.swp
+#ignores all vim swap files
+*.swp
+*.swo
+
