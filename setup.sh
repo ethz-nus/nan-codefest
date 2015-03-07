@@ -1,6 +1,6 @@
 apt-get update
 apt-get upgrade
-apt-get install zsh git nodejs npm
+apt-get install zsh git nodejs npm mongodb
 
 chsh -s /usr/bin/zsh
 
