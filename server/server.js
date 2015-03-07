@@ -12,31 +12,42 @@ var bcrypt = require('bcryptjs');
 
 console.log("Script Initialized")
 
+var mongoUri = 'mongodb://getaway.jellykaya.com/test,mongodb://localhost/test'
+
 /*
 Schema Init for Database Objects
 */
 
+
+/*
+Google Geocoding API
+https://developers.google.com/maps/documentation/geocoding/#JSON
+*/
+
 var eventSchema = mongoose.Schema({
-  startTime: Number,
-  endTime: ,
   eventId: String,
-  location: Number,
-  categories: [String],
-  cost:
+  startTime: Date,
+  endTime: Date,
+  loc: {
+    locLong: Number,
+    locLat: Number,
+    locFormattedAdd: String
+  },
+  categories: [String]
 });
+
+var Event = mongoose.model('Event', eventSchema);
 
 var userSchema = mongoose.Schema({
   oauthId: Number,
   email: { type: String, unique: true },
-  lastKnownLocation: ,
+  lastKnownLoc: {
+    locLang: Number,
+    locLat: Number
+  },
   password: String,
   picture: String,
-  categories: [String],
-
-})
-
-var eventGroupSchema = mongoose.Schema({
-  
+  categories: [String]
 })
 
 userSchema.pre('save', function(next) {
@@ -52,6 +63,35 @@ userSchema.pre('save', function(next) {
   });
 });
 
+userSchema.methods.comparePassword = function(candidatePassword, cb) {
+  bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+    if (err) return cb(err);
+    cb(null, isMatch);
+  });
+};
 
+var User = mongoose.model('User', userSchema);
 
-console.log("Schemas Initialized")
+var eventGroupSchema = mongoose.Schema({
+  groupName: String,
+  eventId: String,
+  groupOwnerId: Number,
+  groupMemberId: [Number],
+  meetingLoc: {
+    locLong: Number,
+    locLat: Number,
+    locFormattedAdd: String
+  },
+  meetingTime: Date
+})
+
+var EventGroup = mongoose.model('EventGroup', eventGroupSchema);
+
+console.log("Schemas Initialized");
+
+mongoose.connect(mongoUri, function(err){
+  if (err) {
+    console.log("Cannot connect to getaway.jellykaya.com!")
+    console.log(err);
+  }
+});
