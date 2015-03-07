@@ -47,4 +47,32 @@ angular.module('starter.services', [])
       return null;
     }
   };
+})
+
+.factory('TimeToLocation', function($http){
+  var googleMapsApiKey =  "AIzaSyBBsbcZWi9NmRSBp1ISIikmYbliZVHvcEA";   
+  
+  return {
+    getPublicTransportTime: 
+      function(userLat, userLong, dest, timeOfDay){
+        $http.get('https://maps.googleapis.com/maps/api/distancematrix/json',{
+          params: {
+            origins: userLat + ',' + userLong,
+            destinations: dest,
+            key: googleMapsApiKey,
+            mode: 'transit',
+            units: 'metric',
+            departure_time: timeOfDay
+          }
+        })
+        .success(function (data, status){
+          console.log(data);
+        })
+      }
+    }  
+    /*getDrivingTime:
+      function(userLat, userLong, dest, timeOfDay){
+           
+      }
+    }*/
 });
