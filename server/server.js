@@ -48,7 +48,8 @@ var userSchema = mongoose.Schema({
     latitude: Number
   },
   picture: String,
-  categories: [String]
+  categories: [String],
+  phoneNumber: String
 })
 
 var User = mongoose.model('User', userSchema);
@@ -129,7 +130,8 @@ io.on('connection', function (socket) {
         latitude: newUser.lastKnownLoc.latitude
       },
       picture: newUser.picture,
-      categories: newUser.categories
+      categories: newUser.categories,
+      phoneNumber: newUser.phoneNumber
     }).save(function(err){
       if (err) {
         console.log("Error in saving user");
