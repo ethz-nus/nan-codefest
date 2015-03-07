@@ -21,7 +21,7 @@ var eventSchema = mongoose.Schema({
   endTime: ,
   eventId: String,
   location: Number,
-  categories: ,
+  categories: [String],
   cost:
 });
 
@@ -29,9 +29,14 @@ var userSchema = mongoose.Schema({
   oauthId: Number,
   email: { type: String, unique: true },
   lastKnownLocation: ,
-  dateCreated: ,
   password: String,
-  picture: String
+  picture: String,
+  categories: [String],
+
+})
+
+var eventGroupSchema = mongoose.Schema({
+  
 })
 
 userSchema.pre('save', function(next) {
