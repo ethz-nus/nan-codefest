@@ -122,7 +122,6 @@ $( document ).ready(function() {
       var bounds = new google.maps.LatLngBounds();
       for (key in events){
           var evt = events[key];
-          console.log(evt);
           var loc = new google.maps.LatLng(evt.latitude, evt.longitude);
           var marker = new google.maps.Marker({
               position: loc,
@@ -233,7 +232,7 @@ $( document ).ready(function() {
     //     }
     //   });
 
-    
+
 
 
 })
