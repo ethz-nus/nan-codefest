@@ -233,6 +233,7 @@ angular.module('starter.services', [])
 
     setResultEvent: function(event){
       resultEvents = [event];
+      notifyObservers();
     },
 
     quitEvent: function(targetEvent, userId){

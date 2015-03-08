@@ -114,7 +114,6 @@ angular.module('starter.controllers',['ionic'])
     Events.registerObserverCallback(function(){
       $scope.clearMarkers();
       $scope.addEventMarkers();
-      console.log($scope.map);
     });
     // $scope.centerOnMe();
 })
@@ -155,6 +154,7 @@ angular.module('starter.controllers',['ionic'])
 
 
 .controller('EventsCtrl', function($scope, Events,  AccountManager) {
+  console.log("event");
   $scope.userId = AccountManager.getUserId();
   $scope.events = Events.allAttending($scope.userId);
 
