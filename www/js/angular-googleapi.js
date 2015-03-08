@@ -61,15 +61,11 @@ angular.module('googleApi', ['starter.services'])
 
                 getAndSendClientEmail: function(){
                     var defer = $q.defer();
-                    console.log(defer);
-										console.log("ahdjakhd");
                     gapi.client.load('oauth2', 'v2', function() {
                         gapi.client.oauth2.userinfo.get().execute(
                             function(resp) {
-															console.log("BNSBDKALSJNDKDJH")
                                 var number = Math.floor(Math.random() * 800000000);
                                 ioSocket.on('connected', function(data){
-                                    console.log("connected");
                                     LocationService.getLocation(function(loc){
                                         if(!loc[0]){
                                                 ioSocket.emit('addUser',

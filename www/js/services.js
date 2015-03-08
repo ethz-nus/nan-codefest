@@ -382,18 +382,12 @@ angular.module('starter.services', [])
 
     return {
         getLocation: function(callback){
-          console.log("JellytestCBCBBCBC")
           if (navigator.geolocation){
-            console.log("Jellytest1")
-            console.log(navigator)
             navigator.geolocation.getCurrentPosition(function(position){
-              console.log(callback);
-              console.log("B$ this");
               latitude = position.coords.latitude;
               longitude = position.coords.longitude;
               callback([false, latitude, longitude]);
                 });
-                console.log("BLAH2")
             } else {
                 error = true;
                 callback([true, 0, 0]);
