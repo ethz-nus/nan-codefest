@@ -28,10 +28,10 @@
 
           <p class="col col-80"><span>Buddies: </span>{{print(group.users)}}</p>
         </div>
-        <section class="group-info">
+        <article class="group-info" ng-if="group.location">
           <p ng-if="group.location"><span class="ion-ios-location"></span>{{group.location}}<span class="ion-clock"></span>Meet at {{group.time | date: 'h:mma'}}</p>
           <p ng-if="group.contact"><span class="ion-ios-telephone"></span>{{group.contact}}</p>
-        </section>
+        </article>
       <div>
         <p class="icon small" ng-if="$index==selectedGroupIndex">Joined</p>
         <i class="icon ion-ios-checkmark-outline green" ng-click="register($index, group)" ng-if="group.owner != userId && $index!=selectedGroupIndex" ></i>

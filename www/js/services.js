@@ -247,6 +247,13 @@ angular.module('starter.services', [])
 
   }];
 
+  var observerCallbacks = [];
+
+
+  var resultEvents = events.filter(function(event){
+    return true;
+  });
+
   var attendingGroup = function(event,userId){
     for(var i = 0; i < event.groups.length; i++){
       var group = event.groups[i];
@@ -259,6 +266,12 @@ angular.module('starter.services', [])
 
   var isAttending = function(event, userId){
     return attendingGroup(event, userId) != null;
+  };
+
+  var notifyObservers = function(){
+    angular.forEach(observerCallbacks, function(callback){
+      callback();
+    });
   };
 
   return {
@@ -293,6 +306,15 @@ angular.module('starter.services', [])
       })
     },
 
+    resultEvents: function(){
+      return resultEvents;
+    },
+
+    setResultEvent: function(event){
+      resultEvents = [event];
+      notifyObservers();
+    },
+
     quitEvent: function(targetEvent, userId){
       for(var i = 0; i < targetEvent.groups.length; i++){
         var group = targetEvent.groups[i];
@@ -324,7 +346,7 @@ angular.module('starter.services', [])
       targetEvent.groups.push(newGroup);
   },
     search: function(dateKey, locationKey, categoryKey){
-        return events.filter( function(event){
+        resultEvents = events.filter( function(event){
             var dateTemp = null;
             if ( Object.prototype.toString.call(dateKey) === "[object Date]" ) {
                 // it is a date
@@ -344,119 +366,12 @@ angular.module('starter.services', [])
             }
             return true;
         });
+        notifyObservers();
+        return resultEvents;
+    },
+    registerObserverCallback: function(callback){
+      observerCallbacks.push(callback);
     }
-  };
-})
-
-.factory('AttendingEvents', function() {
-  // Might use a resource here that returns a JSON array
-
-  // Some fake testing data
-  var events = [{
-    id: 0,
-    title: 'Music Festival',
-    time: new Date("April 13, 2015 11:00:00"),
-    pic: 'img/events/music.jpg',
-    category: "Festival",
-    url:"www.google.com",
-    description: "dummy blahblahblah....",
-    location:'Oerlikon',
-    distance: 200
-  }, {
-    id: 1,
-    title: 'Pig Show',
-    time: new Date("April 13, 2015 11:00:00"),
-    pic: 'img/events/art.jpg',
-    category: "Art",
-    url:"www.google.com",
-    latitude: 47.366018,
-    longitude: 8.518546,
-    description: "dummy blahblahblah....",
-    location:'ETH',
-    distance: 5000
-  }, {
-    id: 2,
-    title: 'Women Day',
-    time: new Date("May 20, 2015 7:00:00"),
-    pic: 'img/events/parade.jpg',
-    category: "Festival",
-    url:"www.google.com",
-    latitude: 47.400063,
-    longitude: 8.397846,
-    description: "dummy blahblahblah....",
-    location:'HB',
-    distance: 1000
-  }, {
-    id: 3,
-    title: 'Marathon',
-    time: new Date("March 13, 2015 11:00:00"),
-    pic: 'img/events/marathon.jpeg',
-    category: "Sports",
-    url:"www.google.com",
-    latitude: 47.166143,
-    longitude: 8.526764,
-    description: "dummy blahblahblah....",
-    location:'UZH',
-    distance: 300
-  }, {
-    id: 4,
-    title: 'Museum visiting',
-    time: new Date("April 3, 2015 18:00:00"),
-    pic: 'img/events/museum.jpg',
-    category: "Museum",
-    url:"www.google.com",
-    latitude: 47.484497,
-    longitude: 8.738251,
-    description: "dummy blahblahblah....",
-    location:'Mulach',
-    distance: 500
-  }];
-
-
-  return {
-    all: function() {
-      return events;
-    },
-    remove: function(event) {
-      events.splice(events.indexOf(event), 1);
-    },
-    get: function(eventId) {
-      for (var i = 0; i < events.length; i++) {
-        if (events[i].id === parseInt(eventId)) {
-          return events[i];
-        }
-      }
-      return null;
-    },
-    search: function(dateKey, locationKey, categoryKey){
-        return events.filter( function(event){
-            var dateTemp = null;
-            if ( Object.prototype.toString.call(dateKey) === "[object Date]" ) {
-                // it is a date
-                if ( !isNaN( dateKey.getTime() ) ) {  // d.valueOf() could also work
-                    // date is valid
-                    dateTemp = Math.floor((Date.parse(dateKey) - Date.parse(event.time))/(1000*60*60*24));
-                }
-            }
-            if( dateTemp != null && Math.abs(dateTemp) > 2){
-                return false;
-            }
-            if ((locationKey != null) && !(event.location.indexOf(locationKey)!=-1) ){
-                return false;
-            }
-            if ((categoryKey != null) && (categoryKey !== event.category) ){
-                return false;
-            }
-            return true;
-        });
-    },
-    deleteGroup: function(targetEvent, userID){
-      var newGroups = targetEvent.groups.filter(function(group){
-        return group.owner != userID;
-      });
-      targetEvent.groups = newGroups;
-    }
-
   };
 })
 

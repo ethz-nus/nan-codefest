@@ -13,7 +13,7 @@ var geolib = require('geolib');
 
 console.log("Script Initialized")
 
-var mongoUri = 'mongodb://getaway.jellykaya.com/test,mongodb://localhost/test'
+var mongoUri = 'mongodb://getaway.jellykaya.com/test'
 
 /*
 Schema Init for Database Objects
@@ -28,14 +28,13 @@ https://developers.google.com/maps/documentation/geocoding/#JSON
 var activitySchema = mongoose.Schema({
   activityId: String,
   startTime: Date,
-  endTime: Date,
   loc: {
     longitude: Number,
     latitude: Number,
     formattedAdd: String
   },
   categories: [String],
-  picUrl: string
+  picUrl: String
 });
 
 var Activity = mongoose.model('Activity', activitySchema);
@@ -48,7 +47,8 @@ var userSchema = mongoose.Schema({
     latitude: Number
   },
   picture: String,
-  categories: [String]
+  categories: [String],
+  phoneNumber: String
 })
 
 var User = mongoose.model('User', userSchema);
@@ -129,7 +129,8 @@ io.on('connection', function (socket) {
         latitude: newUser.lastKnownLoc.latitude
       },
       picture: newUser.picture,
-      categories: newUser.categories
+      categories: newUser.categories,
+      phoneNumber: newUser.phoneNumber
     }).save(function(err){
       if (err) {
         console.log("Error in saving user");
@@ -157,7 +158,6 @@ io.on('connection', function (socket) {
     new Activity({
       activityId: newActivity.activityId,
       startTime: newActivity.startTime,
-      endTime: newActivity.endTime,
       loc: {
         longitude: newActivity.loc.longitude,
         latitude: newActivity.loc.latitude,
@@ -234,12 +234,12 @@ io.on('connection', function (socket) {
     ActivityGroup.find({
       activityId: query.activityId,
       transport: query.transport
-    }.exec(function(err, activityGroup){
+    }).exec(function(err, activityGroup){
       activityGroups.push(activityGroup);
     });
     socket.emit('receiveActivityGroups', activityGroups);
   });
-  
+
   //Signal closure of socket
   socket.on('disconnect', function(){
     console.log("Socket closed");
