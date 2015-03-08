@@ -207,8 +207,8 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
         });
     };
 
-    var loc1 = $scope.events[0].latitude+","+$scope.events[0].longitude;
-    var loc2 = $scope.events[1].latitude+","+$scope.events[1].longitude;
+    // var loc1 = $scope.events[0].latitude+","+$scope.events[0].longitude;
+    // var loc2 = $scope.events[1].latitude+","+$scope.events[1].longitude;
 
     // $.ajax({
     //     url: 'https://maps.googleapis.com/maps/api/distancematrix/json?origins='+loc1+'&destinations='+loc2+'&mode=bicycling&language=fr-FR&key=',

@@ -58,7 +58,7 @@ angular.module('starter.services', [])
       ioSocket.on('receiveActivities', function(activities){
         ioSocket.close();
         events = [];
-        for (var i=0; i<10; i++){
+        for (var i=0; i<activities[0].length; i++){
             var tempEvt = activities[0][i];
             events.push({
                 title: tempEvt.activityId,
