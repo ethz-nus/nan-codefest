@@ -36,6 +36,16 @@ angular.module('starter.controllers',['ionic'])
 
         $scope.map = map;
       }
+
+      var markers = [];
+
+      function clearMarkers(){
+          for (var i=0; i<markers.length; i++){
+              markers[i].setMap(null);
+          }
+          markers = [];
+      }
+
 		$( document ).ready(function() {
 			initialize();
 		});
@@ -60,7 +70,14 @@ angular.module('starter.controllers',['ionic'])
       };
 
       $scope.clickMarker = function(id) {
-	    evt = Events.resultEvents()[id];
+        var evt;
+	    var results = Events.resultEvents();
+        for(key in results){
+            if(results[key].id == id){
+                evt = results[key];
+                break;
+            }
+        }
         $ionicPopup.alert({
             title: evt.title,
             template: evt.category + ' Event At ' + evt.time
@@ -79,6 +96,7 @@ angular.module('starter.controllers',['ionic'])
             title: evt.title,
             id: evt.id
           });
+          markers.push(marker);
           google.maps.event.addListener(marker, 'click', function() {
             var contentString = "<div><a ng-click='clickMarker(" + this.id
             + ")'>Click to know more about " + this.title + "</a></div>";
@@ -91,11 +109,21 @@ angular.module('starter.controllers',['ionic'])
           });
           bounds.extend(loc);
         }
-        $scope.map.fitBounds(bounds);
+        var listener = google.maps.event.addListener($scope.map, "idle", function() {
+            $scope.map.fitBounds(bounds);
+            google.maps.event.removeListener(listener);
+        });
+        var listener = google.maps.event.addListener($scope.map, "idle", function() {
+            if ($scope.map.getZoom() > 16) $scope.map.setZoom(16);
+            google.maps.event.removeListener(listener);
+        });
       };
 
+    clearMarkers();
     $scope.addEventMarkers();
+
     Events.registerObserverCallback(function(){
+      clearMarkers();
       $scope.addEventMarkers();
       console.log($scope.map);
     });
@@ -114,7 +142,7 @@ angular.module('starter.controllers',['ionic'])
     $scope.searchEvents = function(category){
         $state.go('tab.search-result',{
             date: $scope.search.date,
-            location: $scope.search.location, 
+            location: $scope.search.location,
             category: category
         });
     };
@@ -280,4 +308,3 @@ angular.module('starter.controllers',['ionic'])
     $("ion-nav-bar").hide();
 
 });
-
