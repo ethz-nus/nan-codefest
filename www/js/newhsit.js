@@ -1,6 +1,6 @@
 var cats = [];
 
-Activity.find({}).exec(function(err, activity){
+Activity.find({}).limit(20).exec(function(err, activity){
   for(key = 0; key < activity.length; key++){
     console.log(activity[key].categories)
     for(i = 0; i < activity[key].categories.length; i++){
