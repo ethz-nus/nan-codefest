@@ -37,6 +37,7 @@ angular.module('starter.controllers',['ionic'])
         $scope.map = map;
       }
 
+
 		$( document ).ready(function() {
 			initialize();
 		});
@@ -55,13 +56,26 @@ angular.module('starter.controllers',['ionic'])
         navigator.geolocation.getCurrentPosition(function(pos) {
           $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
           $scope.loading.hide();
+          var loc = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+          var marker = new google.maps.Marker({
+            position: loc,
+            map: $scope.map,
+            icon: pinImage
+          });
         }, function(error) {
           alert('Unable to get location: ' + error.message);
         });
       };
 
       $scope.clickMarker = function(id) {
-	    evt = Events.resultEvents()[id];
+        var evt;
+	    var results = Events.resultEvents();
+        for(key in results){
+            if(results[key].id == id){
+                evt = results[key];
+                break;
+            }
+        }
         $ionicPopup.alert({
             title: evt.title,
             template: evt.category + ' Event At ' + evt.time
@@ -94,7 +108,9 @@ angular.module('starter.controllers',['ionic'])
             title: evt.title,
             id: evt.id
           });
+
           $scope.markers.push(marker);
+
           google.maps.event.addListener(marker, 'click', function() {
             var contentString = "<div><a ng-click='clickMarker(" + this.id
             + ")'>Click to know more about " + this.title + "</a></div>";
@@ -107,9 +123,41 @@ angular.module('starter.controllers',['ionic'])
           });
           bounds.extend(loc);
         }
-        $scope.map.fitBounds(bounds);
+        var listener = google.maps.event.addListener($scope.map, "idle", function() {
+            $scope.map.fitBounds(bounds);
+            google.maps.event.removeListener(listener);
+        });
+        var listener = google.maps.event.addListener($scope.map, "idle", function() {
+            if ($scope.map.getZoom() > 16) $scope.map.setZoom(16);
+            google.maps.event.removeListener(listener);
+        });
       };
 
+      $scope.setGeoMarker = function(){
+        var pinColor = "387ef5";
+        var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0,0),
+        new google.maps.Point(10, 34));
+        $scope.loading = $ionicLoading.show({
+          content: 'Getting current location...',
+          showBackdrop: false
+        });
+
+        navigator.geolocation.getCurrentPosition(function(pos) {
+          $scope.loading.hide();
+          var loc = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+          var marker = new google.maps.Marker({
+            position: loc,
+            map: $scope.map,
+            icon: pinImage
+          });
+        }, function(error) {
+          alert('Unable to get location: ' + error.message);
+        });
+      }
+
+    $scope.clearMarkers();
     $scope.addEventMarkers();
     Events.registerObserverCallback(function(){
       $scope.clearMarkers();
@@ -130,7 +178,7 @@ angular.module('starter.controllers',['ionic'])
     $scope.searchEvents = function(category){
         $state.go('tab.search-result',{
             date: $scope.search.date,
-            location: $scope.search.location, 
+            location: $scope.search.location,
             category: category
         });
     };
@@ -241,6 +289,10 @@ angular.module('starter.controllers',['ionic'])
     $("#create-public-btn").attr("disabled",false);
     $("#solo-btn").attr("disabled",false);
   }
+
+  $scope.showRouting = function(){
+     $rootScope.$broadcast('markRoute');
+  }
 })
 
 .controller('PreferenceCtrl', function($scope) {
@@ -298,4 +350,3 @@ angular.module('starter.controllers',['ionic'])
     $("ion-nav-bar").hide();
 
 });
-
