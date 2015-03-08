@@ -120,7 +120,6 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 
     function doMapProcessing(){
       var bounds = new google.maps.LatLngBounds();
-      console.log(events);
       for (key in events){
           var evt = events[key];
           console.log(evt);
@@ -135,8 +134,8 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
           $scope.markers.push(marker);
 
           google.maps.event.addListener(marker, 'click', function() {
-              var contentString = "<div><a ng-click='clickMarker(" + this.id
-              + ")'>Click to know more about " + this.title + "</a></div>";
+              var contentString = "<div><a ng-click='clickMarker(\"" + this.id
+              + "\")'>Click to know more about " + this.title + "</a></div>";
               var compiled = $compile(contentString)($scope);
               var infowindow = new google.maps.InfoWindow({
                   content: compiled[0]
