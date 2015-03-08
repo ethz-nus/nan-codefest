@@ -25,10 +25,10 @@ angular.module('starter.services', [])
       });
     },
     open: function(){
-        var ioSocket = io.connect(serverSocket, {'sync disconnect on unload': true});
+      var ioSocket = io.connect(serverSocket, {'sync disconnect on unload': true});
     },
     close: function (){
-        if(ioSocket) ioSocket.close();
+      if(ioSocket) ioSocket.close();
     }
  };
 })
@@ -39,18 +39,95 @@ angular.module('starter.services', [])
     console.log("activities connected");
   });
 
+  var resultEvents;
+  var events;
+  var observerCallbacks = [];
+
+  var notifyObservers = function(){
+      angular.forEach(observerCallbacks, function(callback){
+          callback();
+      });
+  };
+
   return {
-    getActivities: function(){
+    all: function(){
+      if(events){ return defer.resolve(events);}
       var defer = $q.defer();
       ioSocket.open();
       ioSocket.emit('getActivities', {});
       ioSocket.on('receiveActivities', function(activities){
         ioSocket.close();
-        console.log(activities);
-        return defer.resolve(activities);
+        for (var i=0; i<1000; i++){
+            var tempEvt = activities[0][i];
+            events = [];
+            events.push({
+                title: tempEvt.activityId,
+                time: new Date(tempEvt.startTime),
+                pic: tempEvt.picUrl,
+                category: tempEvt.categories,
+                latitude: tempEvt.loc.latitude,
+                longitude: tempEvt.loc.longitude,
+                location: tempEvt.loc.formattedAddress
+            });
+            resultEvents = events;
+        }
+        return defer.resolve(events);
       });
-      ioSocket.close();
+      //ioSocket.close();
       return defer.promise;
+    },
+    get: function(eventId) {
+      if(!events){
+          promise = this.all()
+          promise.then(this.get(eventId));
+      } else {
+        for (var i = 0; i < events.length; i++) {
+          if (events[i].id === parseInt(eventId)) {
+            return events[i];
+          }
+        }
+        return null;
+      }
+    },
+    search: function(dateKey, locationKey, categoryKey){
+      if(!events){
+        promise = this.all()
+        promise.then(this.search(dateKey, locationKey, categoryKey));
+      } else {
+        resultEvents = events.filter( function(event){
+            var dateTemp = null;
+            if ( Object.prototype.toString.call(dateKey) === "[object Date]" ) {
+                // it is a date
+                if ( !isNaN( dateKey.getTime() ) ) {  // d.valueOf() could also work
+                    // date is valid
+                    dateTemp = Math.floor((Date.parse(dateKey) - Date.parse(event.time))/(1000*60*60*24));
+                }
+            }
+            if( dateTemp != null && Math.abs(dateTemp) > 2){
+                return false;
+            }
+            if ((locationKey != null) && !(event.location.indexOf(locationKey)!=-1) ){
+                return false;
+            }
+            if ((categoryKey != null) && (categoryKey !== event.category) ){
+                return false;
+            }
+            return true;
+        });
+        notifyObservers();
+        return resultEvents;
+      }
+    },
+    registerObserverCallback: function(callback){
+      observerCallbacks.push(callback);
+    },
+    resultEvents: function(){
+        if(!resultEvents){
+            promise = this.all()
+            //
+        } else {
+            return defer.resolve(resultEvents);
+        }
     }
   }
 }])
