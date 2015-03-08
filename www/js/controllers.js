@@ -70,7 +70,7 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
         });
       };
 
-      $scope.addEventMarkers = function(){ 
+      $scope.addEventMarkers = function(){
         var events = Events.all();
         var bounds = new google.maps.LatLngBounds();
         for (key in events){
@@ -101,35 +101,25 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
     // $scope.centerOnMe();
 })
 
-.controller('SearchCtrl', function($scope, Events, AccountManager){
+.controller('SearchCtrl', function($scope, $state, Events, AccountManager){
+
     $scope.userId = AccountManager.getUserId();
     $scope.events = Events.all();
-    $scope.search = {
-      date: new Date(),
-      location: 'foo'
-    };
 
     $scope.search = function(){
-      $scope.filteredEvents = $scope.events.filter( function(event){
-          var dateTemp = null;
-          if ( Object.prototype.toString.call($scope.search.date) === "[object Date]" ) {
-            // it is a date
-            if ( !isNaN( $scope.search.date.getTime() ) ) {  // d.valueOf() could also work
-              // date is valid
-               dateTemp = new Date(Date.parse($scope.search.date) - Date.parse(event.time));
-            }
-          }
-          if( dateTemp != null && dateTemp.getDate() - 1 != 0)
-            return false;
-          else if (!isNaN($scope.location) && (!$scope.search.location.indexOf(event.location) ||  !event.location.indexOf($scope.search.location)) )
-            return false;
-          else if ( !isNaN($scope.category) && ($scope.search.catalog != event.catalog) )
-            return false;
-          else return true;
+        $state.go('tab.search-result',{
+            date: $scope.search.date,
+            location: $scope.search.location,
+            category: $scope.search.category
         });
-      window.location.href = "#/tab/results";
-      console.log($scope.filteredEvents);
-    }
+    };
+
+})
+
+
+.controller('SearchResultsCtrl', function($scope, $stateParams, Events) {
+
+    $scope.events = Events.search($stateParams.date, $stateParams.location, $stateParams.category);
 
     $scope.isAttending = function(event){
       return Events.isAttending(event, $scope.userId);
@@ -284,3 +274,4 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 .controller('WelcomeCtrl', ['$scope', 'googleLogin', function($scope, googleLogin){
   $scope.login = function(){googleLogin.login()};
 }]);
+
