@@ -13,7 +13,7 @@ var geolib = require('geolib');
 
 console.log("Script Initialized")
 
-var mongoUri = 'mongodb://getaway.jellykaya.com/test,mongodb://localhost/test'
+var mongoUri = 'mongodb://getaway.jellykaya.com/test'
 
 /*
 Schema Init for Database Objects
