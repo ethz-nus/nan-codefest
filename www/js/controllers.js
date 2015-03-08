@@ -230,6 +230,16 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 
     var lat, lon, error;
 
+    ioSocket.open();
+    
+    window.onbeforeunload = function(){
+        ioSocket.close();
+    }
+
+    $scope.$on('$destroy', function() {
+        delete window.onbeforeunload;
+    });
+
     $scope.getLocation = function(){
       LocationService.getLocation(function(result){
         error = result[0];

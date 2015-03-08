@@ -1,9 +1,10 @@
 var serverSocket = "getaway.jellykaya.com:3001";
 angular.module('starter.services', [])
 .factory('ioSocket', function($rootScope){
-  var ioSocket = io.connect(serverSocket);
+  var ioSocket;
   return {
     on: function (eventName, callback){
+      if (!ioSocket){ var ioSocket = io.connect(serverSocket)}
       ioSocket.on(eventName, function(){
         var args = arguments;
         $rootScope.$apply(function () {
@@ -20,11 +21,17 @@ angular.module('starter.services', [])
           }
         });
       });
+    },
+    open: function(){
+        var ioSocket = io.connect(serverSocket);
+    },
+    close: function (){
+        ioSocket.close();
     }
-  };
+ };
 })
 
-.factory('Activities', ['$q', '$scope', '$rootScope', 'ioSocket', function($q, $scope, $rootScope, ioSocket) {
+.factory('Activities', ['$q', 'ioSocket', function($q, ioSocket) {
 
   ioSocket.on('connected', function(data){
 
@@ -33,36 +40,43 @@ angular.module('starter.services', [])
   return {
     getActivities: function(){
       var defer = $q.defer();
+      ioSocket.open();
       ioSocket.emit('getActivities', {});
       ioSocket.on('receiveActivities', function(activities){
+        ioSocket.close();
         return defer.resolve(activities);
       });
+      ioSocket.close();
       return defer.promise;
     }
   }
 }])
 
-.factory('ActivityGroups', ['$scope', '$rootScope', 'ioSocket', function($scope, $rootScope, ioSocket) {
+.factory('ActivityGroups', ['ioSocket', function(ioSocket) {
   ioSocket.on('connected', function(data){
 
   });
 
-  $scope.getActivityGroups = function(id, transportMode){
-    var activityQuery = {'id': id, 'transport': transportMode};
-    ioSocket.emit('getActivityGroups', activityQuery);
-    ioSocket.on('receiveActivityGroups', function(groups){
-      return groups;
-    })
-  };
-
-  $scope.updateActivityGroup = function(group){
-    var defer = $q.defer();
-    ioSocket.emit('updateActivityGroup', group);
-    ioSocket.on('updateActivityGroupResult', function(result){
-      return defer.resolve(result);
-    })
-    return defer.promise;
-  };
+  return {
+    getActivityGroups: function(id, transportMode){
+      var activityQuery = {'id': id, 'transport': transportMode};
+      ioSocket.emit('getActivityGroups', activityQuery);
+      ioSocket.on('receiveActivityGroups', function(groups){
+        ioSocket.close();
+        return groups;
+      })
+    },
+    updateActivityGroup: function(group){
+      var defer = $q.defer();
+      ioSocket.emit('updateActivityGroup', group);
+      ioSocket.on('updateActivityGroupResult', function(result){
+        ioSocket.close();
+        return defer.resolve(result);
+      })
+      ioSocket.close();
+      return defer.promise;
+    }
+  }
 }])
 
 .factory('AccountManager',function(){
