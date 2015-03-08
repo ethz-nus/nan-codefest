@@ -24,7 +24,7 @@ angular.module('starter.services', [])
   };
 })
 .factory('Activities', ['$scope', '$rootScope', 'ioSocket', function($scope, $rootScope, ioSocket) {
-  
+
   ioSocket.on('connected', function(data){
 
   });
@@ -37,7 +37,7 @@ angular.module('starter.services', [])
     });
     return defer.promise;
   };
-  
+
 }])
 .factory('ActivityGroups', ['$scope', '$rootScope', 'ioSocket', function($scope, $rootScope, ioSocket) {
   ioSocket.on('connected', function(data){
@@ -441,6 +441,25 @@ angular.module('starter.services', [])
     }
 
   };
+})
+
+.factory('LocationService', function(){
+
+    return {
+        getLocation: function(callback){
+          if (navigator.geolocation){
+            navigator.geolocation.getCurrentPosition(function(position){
+              latitude = position.coords.latitude;
+              longitude = position.coords.longitude;
+              callback([false, latitude, longitude]);
+                });
+            } else {
+                error = true;
+                callback([true, 0, 0]);
+            }
+        }
+    }
+
 })
 
 .factory('TimeToLocation', function(){

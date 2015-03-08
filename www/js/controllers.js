@@ -226,21 +226,16 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
   };
 })
 
-.controller('TTLCtrl', function($scope, TimeToLocation) {
+.controller('TTLCtrl', function($scope, LocationService, TimeToLocation) {
 
-    var lat = 0;
-    var lon = 0;
-    var error = false;
+    var lat, lon, error;
 
     $scope.getLocation = function(){
-        if (navigator.geolocation){
-            navigator.geolocation.getCurrentPosition(function(position){
-                lat = position.coords.latitude;
-                lon = position.coords.longitude;
-            });
-        } else {
-            error = true;
-        }
+      LocationService.getLocation(function(result){
+        error = result[0];
+        lat = result[1];
+        lon = result[2];
+      });
     }
 
     $scope.getTimeToLocation = function(){
@@ -277,4 +272,3 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
     console.log(result);
   };
 }]);
-
