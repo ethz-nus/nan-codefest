@@ -1,12 +1,13 @@
 var xray = require('x-ray');
 var geocoder = require('geocoder');
 var mongoose = require('mongoose');
+var sleep = require('sleep');
+
+var maxnum = 100;
 
 var activitySchema = mongoose.Schema({
-  activityName: String,
-  activityId: Number,
+  activityId: String,
   startTime: Date,
-  endTime: Date,
   loc: {
     longitude: Number,
     latitude: Number,
@@ -44,12 +45,12 @@ var createActivity = function (activity, locData){
       .replace(new RegExp("\\t", 'g'), "")
       .replace(new RegExp("\\+", 'g'), "").split(",");
   }
-  console.log(activity.categories)
+  if (locData == undefined || locData.results[0] == undefined){
+    return
+  }
   new Activity({
-    activityName: activity.activityName,
     activityId: activity.activityId,
     startTime: Date.parse(activity.startTime),
-    endTime: undefined,
     loc: {
       longitude: locData.results[0].geometry.location.lat,
       latitude: locData.results[0].geometry.location.lng,
@@ -65,12 +66,14 @@ var createActivity = function (activity, locData){
   });
 }
 
-for(i = 1; i < 2 ; i++){
-  xray('http://events.ch/en/search/2015-03-08/s/'+i)
+var nextParse = function (num){
+  if (num > maxnum){
+    return
+  }
+  xray('http://events.ch/en/search/2015-03-08/s/' + num)
     .select([{
       $root: ".event",
-      activityName: '.event-title a[title]',
-      activityId: '.event',
+      activityId: '.event-title a[title]',
       startTime: '.event-datetime time[datetime]',
       loc: {
         formattedAdd: '.venues-list a'
@@ -79,12 +82,18 @@ for(i = 1; i < 2 ; i++){
       picUrl: '.event-picture-link img[src]'
     }])
     .run(function(err, eventArray) {
+      if (eventArray == undefined){
+        return;
+      }
       eventArray.forEach(function(activity, index, array){
         geocoder.geocode(activity.loc.formattedAdd
           , function ( err, data ) {
             createActivity(activity, data);
         });
-      })
-    });
-  //blah
+      });
+      console.log("Completed " + num + " of " + maxnum + " tries\t " + 1.0*num/maxnum*100 + "%");
+      nextParse(num + 1);
+  });
 }
+
+nextParse(1);

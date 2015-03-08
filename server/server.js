@@ -26,10 +26,8 @@ https://developers.google.com/maps/documentation/geocoding/#JSON
 */
 
 var activitySchema = mongoose.Schema({
-  activityName: String,
-  activityId: Number,
+  activityId: String,
   startTime: Date,
-  endTime: Date,
   loc: {
     longitude: Number,
     latitude: Number,
@@ -160,7 +158,6 @@ io.on('connection', function (socket) {
     new Activity({
       activityId: newActivity.activityId,
       startTime: newActivity.startTime,
-      endTime: newActivity.endTime,
       loc: {
         longitude: newActivity.loc.longitude,
         latitude: newActivity.loc.latitude,
