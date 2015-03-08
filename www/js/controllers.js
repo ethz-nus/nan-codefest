@@ -1,6 +1,10 @@
-angular.module('starter.controllers', [])
+angular.module('starter.controllers',['ionic'])
 
-.controller('DashCtrl', function($scope) {})
+.controller('MapCtrl', function($scope, $ionicLoading, $ionicPopup, $compile, Events) {
+      function initialize() {
+        console.log("load map");
+        var myLatlng = new google.maps.LatLng(47.3786569,8.5487367);
+
         var mapOptions = {
           center: myLatlng,
           zoom: 16,
@@ -30,9 +34,9 @@ angular.module('starter.controllers', [])
 
         $scope.map = map;
       }
-		$( document ).ready(function() {
-			initialize();
-		});
+    $( document ).ready(function() {
+      initialize();
+    });
             // google.maps.event.addDomListener(window, 'load', initialize);
 
       $scope.centerOnMe = function() {
@@ -54,7 +58,7 @@ angular.module('starter.controllers', [])
       };
 
       $scope.clickMarker = function(id) {
-	    evt = Events.all()[id];
+      evt = Events.all()[id];
         $ionicPopup.alert({
             title: evt.title,
             template: evt.category + ' Event At ' + evt.time
