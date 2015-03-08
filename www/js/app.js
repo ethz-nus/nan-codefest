@@ -38,46 +38,87 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
   // Each tab has its own nav history stack:
 
-  .state('tab.dash', {
-    url: '/dash',
+  .state('tab.map', {
+    url: '/map',
     views: {
-      'tab-dash': {
-        templateUrl: 'templates/tab-dash.html',
-        controller: 'DashCtrl'
+      'tab-map': {
+        templateUrl: 'templates/tab-map.html',
+        controller: 'MapCtrl'
       }
     }
   })
 
-  .state('tab.chats', {
-      url: '/chats',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/tab-chats.html',
-          controller: 'ChatsCtrl'
-        }
+  .state('tab.search', {
+    url: '/search',
+    views: {
+      'tab-search': {
+        templateUrl: 'templates/tab-search.html',
+        controller: 'SearchCtrl'
       }
-    })
-    .state('tab.chat-detail', {
-      url: '/chats/:chatId',
+    }
+  })
+
+  .state('tab.search-result', {
+    url: '/results',
+    views: {
+      'tab-search': {
+        templateUrl: 'templates/search-results.html',
+        controller: 'SearchCtrl'
+      }
+    }
+  })
+
+  .state('tab.result-detail', {
+    url: '/results/:eventId',
+    views: {
+      'tab-search': {
+        templateUrl: 'templates/result-detail.html',
+        controller: 'ResultDetailCtrl'
+      }
+    }
+  })
+
+  .state('tab.events', {
+      url: '/events',
       views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
+        'tab-events': {
+          templateUrl: 'templates/tab-events.html',
+          controller: 'EventsCtrl'
         }
       }
     })
 
-  .state('tab.account', {
-    url: '/account',
+  .state('tab.event-detail', {
+      url: '/events/:eventId',
+      views: {
+        'tab-events': {
+          templateUrl: 'templates/event-detail.html',
+          controller: 'EventDetailCtrl'
+        }
+      }
+  })
+
+  .state('tab.preference', {
+    url: '/preference',
     views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
+      'tab-preference': {
+        templateUrl: 'templates/tab-preference.html',
+        controller: 'PreferenceCtrl'
+      }
+    }
+  })
+
+  .state('tab.time-to-location', {
+    url: '/time-to-location',
+    views: {
+      'tab-time-to-location': {
+        templateUrl: 'templates/time-to-location.html',
+        controller: 'TTLCtrl'
       }
     }
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise('/tab/map');
 
 });
