@@ -44,6 +44,7 @@ angular.module('starter.services', [])
   var observerCallbacks = [];
 
   var notifyObservers = function(){
+    console.log("here");
       angular.forEach(observerCallbacks, function(callback){
           callback();
       });
@@ -80,7 +81,9 @@ angular.module('starter.services', [])
     get: function(eventId) {
       if(!events){
           promise = this.all()
-          promise.then(this.get(eventId));
+          promise.then(function(data){
+              this.get(eventId)
+          });
       } else {
         for (var i = 0; i < events.length; i++) {
           if (events[i].id === eventId) {
@@ -92,8 +95,10 @@ angular.module('starter.services', [])
     },
     search: function(dateKey, locationKey, categoryKey){
       if(!events){
-        promise = this.all()
-        promise.then(this.search(dateKey, locationKey, categoryKey));
+        promise = this.all();
+        promise.then(function(data){
+            this.search(dateKey, locationKey, categoryKey)
+        });
       } else {
         resultEvents = events.filter( function(event){
             var dateTemp = null;
@@ -123,6 +128,7 @@ angular.module('starter.services', [])
       observerCallbacks.push(callback);
     },
     resultEvents: function(){
+
         return resultEvents;
     }
   }
