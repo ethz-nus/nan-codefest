@@ -4,10 +4,16 @@
 #ignore .DS_Store
 .DS_Store
 
+.sublime-project
+.sublime-workspace
+
+
 #ignore Ionic/Cordova Stuff
 /node_modules/
 /platforms/
 /plugins/
+
+/npm-debug.log
 
 #ignores all config.json
 .config.json
@@ -19,4 +25,3 @@
 #ignores all vim swap files
 *.swp
 *.swo
-

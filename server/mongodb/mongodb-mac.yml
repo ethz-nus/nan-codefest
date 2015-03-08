@@ -1,0 +1,16 @@
+##Script converted YAML format for better readablity (only applicable for Mongodb ver 2.6 onwards)
+systemLog:
+   verbosity: 9
+   destination: file
+   path: "/Users/jellyrobot/log/mongodb/mongodb.log"
+   logAppend: true
+net:
+   port: 27017
+   maxIncomingConnections: 100000 # we are running this off a small server.
+   http:
+      enabled: true
+      RESTInterfaceEnabled: true
+storage:
+   dbPath: "/Users/jellyrobot/mongodb/db"
+   journal:
+      enabled: true

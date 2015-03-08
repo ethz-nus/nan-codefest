@@ -1,0 +1,38 @@
+# ~/.tmuxinator/server.yml
+
+name: server
+root: ~/nan-codefest
+
+# Optional. tmux socket
+# socket_name: foo
+
+# Runs before everything. Use it to start daemons etc.
+# pre: sudo /etc/rc.d/mysqld start
+
+# Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
+# pre_window: rbenv shell 2.0.0-p247
+
+# Pass command line options to tmux. Useful for specifying a different tmux.conf.
+# tmux_options: -f ~/.tmux.mac.conf
+
+# Change the command to call tmux.  This can be used by derivatives/wrappers like byobu.
+# tmux_command: byobu
+
+
+windows:
+  - git:
+      layout: main-vertical
+      panes:
+        - git pull
+        - git log
+  - node:
+      layout: main-vertical
+      panes:
+        - npm install; nodejs server/server.js | tee ~/log/nodejs/webapp.log
+        - less +F ~/log/mongodb/mongodb.log
+  - mongo:
+      layout: main-vertical
+      panes:
+        - less +F ~/log/mongodb/mongodb.log
+        - sudo service mongod stop; mongod --rest --config ~/nan-codefest/server/mongodb/mongodb.yml
+        - sleep 5 && mongo --host getaway.jellykaya.com --port 27017
