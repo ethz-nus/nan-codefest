@@ -183,6 +183,20 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
       location: null
     }
 
+    function generate_free_start_times(minInterval, maxInterval, num){
+      var curr = Date.parse(Date());
+      console.log(curr);
+      var dates = [];
+
+      for(var i = 0; i < num; i++){
+        dates.push(new Date(curr));
+        curr = curr + Math.random() * (maxInterval - minInterval) + minInterval;
+      }
+      return dates;
+    }
+
+    var dates = generate_free_start_times(12 * 60 * 60 * 1000, 24 * 60 * 60 * 1000, 15);
+
     $scope.searchEvents = function(category){
         $state.go('tab.search-result',{
             date: $scope.search.date,
@@ -190,6 +204,8 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
             category: category
         });
     };
+
+    
 
 })
 
