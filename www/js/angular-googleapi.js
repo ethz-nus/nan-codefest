@@ -85,6 +85,7 @@ angular.module('googleApi', [])
                         var data = {};
                         $rootScope.$broadcast("google:authenticated", authResult);
                         googleApiBuilder.runClientLoadedCallbacks();
+
                         deferred.resolve(data);
                     } else {
                         deferred.reject(authResult.error);

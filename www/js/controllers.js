@@ -269,6 +269,8 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 .controller('WelcomeCtrl', ['$scope', 'googleLogin', function($scope, googleLogin){
   $scope.login = function(){
     var result = googleLogin.login();
-    console.log(result);
+    result.then(function(val){
+      window.location.href = "/#/tab/search";
+    });
   };
 }]);
