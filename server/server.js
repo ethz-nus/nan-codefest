@@ -85,7 +85,21 @@ mongoose.connect(mongoUri, function(err){
 Init Socket.io
 */
 
+
+
+
 var app = express();
+
+//CORS middleware
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header("Access-Control-Allow-Headers", 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+};
+
+app.use(allowCrossDomain);
+
 var ioServer = require('http').Server(app)
 var io = require('socket.io')(ioServer);
 
@@ -120,6 +134,7 @@ io.on('connection', function (socket) {
   */
 
   socket.on('addUser', function (newUser){
+    console.log('adding User ' + newUser);
     newUser = sanitizeInput(newUser);
     new User({
       oauthId: newUser.oauthId,
@@ -139,6 +154,7 @@ io.on('connection', function (socket) {
     });
   });
   socket.on('updateUser', function (newUser){
+    console.log('updating User' + newUser);
     newUser = sanitizeInput(newUser);
     User.update({ email: newUser.email }, newUser,
       function(err, elementsChanged, rawMongoOutput){
@@ -154,6 +170,7 @@ io.on('connection', function (socket) {
   */
 
   socket.on('addActivity', function(newActivity){
+    console.log('adding Activity' + newActivity);
     newActivity = sanitiseInput(newActivity);
     new Activity({
       activityId: newActivity.activityId,
@@ -174,6 +191,7 @@ io.on('connection', function (socket) {
     socket.broadcast.emit('addActivity', newActivity);
   });
   socket.on('updateActivity', function(newActivity){
+    console.log('updating Activity' + newActivity);
     newActivity = sanitiseInput(newActivity);
     Activity.update({ activityId: newActivity.activityId }, newActivity,
       function(err, elementsChanged, rawMongoOutput){
@@ -189,6 +207,7 @@ io.on('connection', function (socket) {
     Activity.find({}).exec(function(err, activity){
       activities.push(activity);
     });
+    console.log('sending Activities' + activities);
     socket.emit('receiveActivities', activities);
   });
 
@@ -197,6 +216,7 @@ io.on('connection', function (socket) {
   */
 
   socket.on('addActivityGroup', function(newActivityGroup){
+    console.log('adding ActivityGroup' + newActivityGroup);
     newActivityGroup = sanitiseInput(newActivityGroup);
     new ActivityGroup({
       groupName: newActivityGroup.groupName,
@@ -219,6 +239,7 @@ io.on('connection', function (socket) {
     socket.broadcast.emit('addActivityGroup', newActivity);
   });
   socket.on('updateActivityGroup', function(newActivityGroup){
+    console.log('updating ActivityGroup' + newActivityGroup);
     newActivityGroup = sanitiseInput(newActivityGroup);
     ActivityGroup.update({ groupName: newActivityGroup.groupName },
       newActivityGroup, function(err, elementsChanged, rawMongoOutput){
@@ -237,6 +258,7 @@ io.on('connection', function (socket) {
     }).exec(function(err, activityGroup){
       activityGroups.push(activityGroup);
     });
+    console.log('sending ActivityGroups' + activityGroups);
     socket.emit('receiveActivityGroups', activityGroups);
   });
 

@@ -6,6 +6,8 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
         });
     })
 .controller('MapCtrl', function($scope, $ionicLoading, $ionicPopup, $compile, Events) {
+      $("ion-nav-bar").show();
+
       function initialize() {
         console.log("load map");
         var myLatlng = new google.maps.LatLng(47.3786569,8.5487367);
@@ -39,9 +41,12 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 
         $scope.map = map;
       }
-    $( document ).ready(function() {
-      initialize();
-    });
+
+
+		$( document ).ready(function() {
+			initialize();
+		});
+
             // google.maps.event.addDomListener(window, 'load', initialize);
 
       $scope.centerOnMe = function() {
@@ -57,21 +62,49 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
         navigator.geolocation.getCurrentPosition(function(pos) {
           $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
           $scope.loading.hide();
+          var loc = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+          var pinColor = "387ef5";
+          var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+            new google.maps.Size(21, 34),
+            new google.maps.Point(0,0),
+            new google.maps.Point(10, 34));
+          var marker = new google.maps.Marker({
+            position: loc,
+            map: $scope.map,
+            icon: pinImage
+          });
+          $scope.markers.push(marker);
+
         }, function(error) {
           alert('Unable to get location: ' + error.message);
         });
       };
 
       $scope.clickMarker = function(id) {
-      evt = Events.all()[id];
+        evt = Events.all()[id];
         $ionicPopup.alert({
             title: evt.title,
             template: evt.category + ' Event At ' + evt.time
         });
       };
 
+      $scope.markers = [];
+
+
+      // Sets the map on all markers in the array.
+      $scope.setAllMap = function(map) {
+        for (var i = 0; i < $scope.markers.length; i++) {
+          $scope.markers[i].setMap(map);
+        }
+      };
+
+      $scope.clearMarkers = function(){
+        $scope.setAllMap(null);
+      };
+
       $scope.addEventMarkers = function(){
-        var events = Events.all();
+        console.log(1);
+        var events = Events.resultEvents();
         var bounds = new google.maps.LatLngBounds();
         for (key in events){
           var evt = events[key];
@@ -82,6 +115,9 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
             title: evt.title,
             id: evt.id
           });
+
+          $scope.markers.push(marker);
+
           google.maps.event.addListener(marker, 'click', function() {
             var contentString = "<div><a ng-click='clickMarker(" + this.id
             + ")'>Click to know more about " + this.title + "</a></div>";
@@ -94,10 +130,47 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
           });
           bounds.extend(loc);
         }
-        $scope.map.fitBounds(bounds);
+        var listener = google.maps.event.addListener($scope.map, "idle", function() {
+            $scope.map.fitBounds(bounds);
+            google.maps.event.removeListener(listener);
+        });
+        var listener = google.maps.event.addListener($scope.map, "idle", function() {
+            if ($scope.map.getZoom() > 16) $scope.map.setZoom(16);
+            google.maps.event.removeListener(listener);
+        });
+      };
+
+      $scope.setGeoMarker = function(){
+        var pinColor = "387ef5";
+        var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+          new google.maps.Size(21, 34),
+          new google.maps.Point(0,0),
+          new google.maps.Point(10, 34));
+          $scope.loading = $ionicLoading.show({
+            content: 'Getting current location...',
+            showBackdrop: false
+        });
+        navigator.geolocation.getCurrentPosition(function(pos) {
+          $scope.loading.hide();
+          var loc = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+          var marker = new google.maps.Marker({
+            position: loc,
+            map: $scope.map,
+            icon: pinImage
+          });
+          $scope.markers.push(marker);
+
+        }, function(error) {
+          alert('Unable to get location: ' + error.message);
+        });
       }
 
+    $scope.clearMarkers();
     $scope.addEventMarkers();
+    Events.registerObserverCallback(function(){
+      $scope.clearMarkers();
+      $scope.addEventMarkers();
+    });
     // $scope.centerOnMe();
 })
 
@@ -105,12 +178,16 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 
     // $scope.userId = AccountManager.getUserId();
     $scope.events = Events.all();
+    $scope.search ={
+      date: null,
+      location: null
+    }
 
-    $scope.search = function(){
+    $scope.searchEvents = function(category){
         $state.go('tab.search-result',{
             date: $scope.search.date,
             location: $scope.search.location,
-            category: $scope.search.category
+            category: category
         });
     };
 
@@ -133,11 +210,12 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 
 
 .controller('EventsCtrl', function($scope, Events,  AccountManager) {
+  console.log("event");
   $scope.userId = AccountManager.getUserId();
   $scope.events = Events.allAttending($scope.userId);
 
   $scope.remove = function(event) {
-    AttendingEvents.remove(event);
+    Events.remove(event);
   };
 
   $scope.sortByTime = function(){
@@ -153,7 +231,7 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
   $scope.deregister = function(event){
     Events.quitEvent(event, $scope.userId);
     $scope.events = Events.allAttending($scope.userId);
-  };
+};
 
   $scope.sortByTime();
 })
@@ -164,6 +242,7 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
   $scope.registeredGroup = Events.attendingGroup($scope.event, $scope.userId);
   $scope.selectedGroupIndex = $scope.registeredGroup? $scope.event.groups.indexOf($scope.registeredGroup) : -1;
 
+  Events.setResultEvent($scope.event);
 
   $scope.print = function(array){
     var str = ' ';
@@ -218,6 +297,10 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
     $("#create-public-btn").attr("disabled",false);
     $("#solo-btn").attr("disabled",false);
   }
+
+  // $scope.showRouting = function(){
+  //    $rootScope.$broadcast('markRoute');
+  // }
 })
 
 .controller('PreferenceCtrl', function($scope) {
@@ -229,6 +312,23 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 .controller('TTLCtrl', function($scope, ioSocket, Activities, LocationService, TimeToLocation) {
 
     var lat, lon, error;
+
+    ioSocket.open();
+
+    $scope.getActivities = function(){
+        var promise = Activities.getActivities();
+        promise.then(function(data){
+            console.log(data);
+        })
+    }
+
+    window.onbeforeunload = function(){
+        ioSocket.close();
+    }
+
+    $scope.$on('$destroy', function() {
+        delete window.onbeforeunload;
+    });
 
     $scope.getLocation = function(){
       LocationService.getLocation(function(result){
@@ -266,7 +366,9 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
     $scope.getLocation();
 })
 
+
 .controller('WelcomeCtrl', ['$scope', 'googleLogin', 'ioSocket', function($scope, googleLogin, ioSocket){
+  $("ion-nav-bar").hide();
   $scope.login = function(){
 
     var result = googleLogin.login();
