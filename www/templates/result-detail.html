@@ -29,8 +29,10 @@
       </div>
       <div>
         <p class="icon small" ng-if="$index==selectedGroupIndex">Joined</p>
-        <i class="icon ion-ios-checkmark-outline green" ng-click="register($index)" ng-if="$index!=selectedGroupIndex" ></i>
-        <i class="icon ion-ios-checkmark green" ng-click="deregister($index)" ng-if="$index==selectedGroupIndex" ></i>
+        <i class="icon ion-ios-checkmark-outline green" ng-click="register($index, group)" ng-if="group.owner != userId && $index!=selectedGroupIndex" ></i>
+        <i class="icon ion-ios-checkmark green" ng-click="deregister(group)" ng-if="group.owner != userId && $index == selectedGroupIndex" ></i>
+        <i class="icon ion-ios-close-outline" ng-click="deleteGroup()" ng-if="group.owner == userId" ></i>
+
       </div>
 
         <ion-option-button class="button-assertive" ng-click="remove(event)">
@@ -39,10 +41,10 @@
       </ion-item>
     </ion-list>
 
-    <button id="create-btn" class="button button-block button-energized" ng-click="createGroup(true)">
+    <button id="create-private-btn" class="button button-block button-energized" ng-click="createGroup(true)">
       Create Carpooling Group
     </button> 
-    <button id="create-btn" class="button button-block button-balanced" ng-click="createGroup(false)">
+    <button id="create-public-btn" class="button button-block button-balanced" ng-click="createGroup(false)">
       Create Public Group
     </button> 
     <button id="solo-btn" class="button button-block button-royal" ng-click="goSolo()">

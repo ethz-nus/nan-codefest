@@ -96,12 +96,10 @@ angular.module('starter.controllers',['ionic'])
     // $scope.centerOnMe();
 })
 
-.controller('SearchCtrl', function($scope, $state, Events){
+.controller('SearchCtrl', function($scope, $state, Events, AccountManager){
+
+    $scope.userId = AccountManager.getUserId();
     $scope.events = Events.all();
-    /*$scope.search = {
-      date: new Date(),
-      location: ''
-  };*/
 
     $scope.search = function(){
         $state.go('tab.search-result',{
@@ -109,55 +107,29 @@ angular.module('starter.controllers',['ionic'])
             location: $scope.search.location,
             category: $scope.search.category
         });
-    }
+    };
+
 })
+
 
 .controller('SearchResultsCtrl', function($scope, $stateParams, Events) {
+
     $scope.events = Events.search($stateParams.date, $stateParams.location, $stateParams.category);
+
+    $scope.isAttending = function(event){
+      return Events.isAttending(event, $scope.userId);
+    }
+
+    $scope.deregister = function(event){
+      Events.quitEvent(event, $scope.userId);
+    }
+
 })
 
-.controller('ResultDetailCtrl', function($scope, $stateParams, Events, AccountManager) {
-  $scope.event = Events.get($stateParams.eventId);
-  $scope.selectedGroupIndex;
 
-  $scope.print = function(array){
-    var str = ' ';
-    array.forEach(function(element, index, array){
-      str += element;
-      if(index != array.length - 1){
-        str+=", "
-      }
-    });
-    return str;
-  }
-
-  $scope.register = function(groupID){
-    $scope.selectedGroupIndex = groupID;
-  }
-
-  $scope.deregister = function(groupID){
-    console.log("deregister");
-    $scope.selectedGroupIndex = -1;
-  }
-
-
-  $scope.createGroup = function(isPrivate){
-    userId = AccountManager.getUserId();
-    Events.createGroup($scope.event, userId, isPrivate)
-  }
-
-  $scope.deleteGroup = function(){
-    userId = AccountManager.getUserId();
-    Events.deleteGroup($scope.event, userId);
-  }
-
-  $scope.goSolo = function(){
-    userId = AccountManager.getUserId();
-  }
-})
-
-.controller('EventsCtrl', function($scope, AttendingEvents) {
-  $scope.events = AttendingEvents.all();
+.controller('EventsCtrl', function($scope, Events,  AccountManager) {
+  $scope.userId = AccountManager.getUserId();
+  $scope.events = Events.allAttending($scope.userId);
 
   $scope.remove = function(event) {
     AttendingEvents.remove(event);
@@ -171,13 +143,76 @@ angular.module('starter.controllers',['ionic'])
 
   $scope.sortByDistance = function(eventA, eventB){
     return eventA.distance - eventB.distance;
-  }
+  };
+
+  $scope.deregister = function(event){
+    Events.quitEvent(event, $scope.userId);
+    $scope.events = Events.allAttending($scope.userId);
+  };
 
   $scope.sortByTime();
 })
 
-.controller('EventDetailCtrl', function($scope, $stateParams, Events) {
+.controller('EventDetailCtrl', function($scope, $stateParams, Events, AccountManager) {
   $scope.event = Events.get($stateParams.eventId);
+  $scope.userId = AccountManager.getUserId();
+  $scope.registeredGroup = Events.attendingGroup($scope.event, $scope.userId);
+  $scope.selectedGroupIndex = $scope.registeredGroup? $scope.event.groups.indexOf($scope.registeredGroup) : -1;
+
+
+  $scope.print = function(array){
+    var str = ' ';
+    array.forEach(function(element, index, array){
+      str += element;
+      if(index != array.length - 1){
+        str+=", "
+      }
+    });
+    return str;
+  }
+
+  $scope.register = function(index, group){
+    if($scope.registeredGroup != null ){
+      $scope.deregister($scope.registeredGroup);
+    }
+    $scope.selectedGroupIndex = index;
+    Events.joinGroup($scope.event, $scope.userId, group);
+    $scope.registeredGroup = group;
+  }
+
+  $scope.deregister = function(group){
+    $scope.selectedGroupIndex = -1;
+    Events.quitGroup($scope.event, $scope.userId, group);
+  }
+
+
+  $scope.createGroup = function(isPrivate){
+    Events.createGroup($scope.event, $scope.userId, isPrivate);
+    $scope.disableNewGroup();
+  }
+
+  $scope.deleteGroup = function(){
+    Events.deleteGroup($scope.event, $scope.userId);
+    $scope.enableNewGroup();
+  }
+
+  $scope.goSolo = function(){
+    $scope.disableNewGroup();
+  }
+
+  $scope.disableNewGroup = function(){
+    $scope.deregister($scope.registeredGroup);
+    $scope.selectedGroupIndex = -1;
+    $("#create-private-btn").attr("disabled",true);
+    $("#create-public-btn").attr("disabled",true);
+    $("#solo-btn").attr("disabled",true);
+  }
+
+  $scope.enableNewGroup = function(){
+    $("#create-private-btn").attr("disabled",false);
+    $("#create-public-btn").attr("disabled",false);
+    $("#solo-btn").attr("disabled",false);
+  }
 })
 
 .controller('PreferenceCtrl', function($scope) {
@@ -229,4 +264,8 @@ angular.module('starter.controllers',['ionic'])
     }
 
     $scope.getLocation();
+})
+
+.controller('WelcomeCtrl', function($scope){
+
 });
