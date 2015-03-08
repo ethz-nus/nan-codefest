@@ -93,7 +93,7 @@ var app = express();
 //CORS middleware
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.header("Access-Control-Allow-Headers", 'Origin, X-Requested-With, Content-Type, Accept');
     next();
 };
@@ -102,6 +102,8 @@ app.use(allowCrossDomain);
 
 var ioServer = require('http').Server(app)
 var io = require('socket.io')(ioServer);
+
+io.set('origins', '*:*');
 
 ioServer.listen(3001, function(){
   console.log("ioServer running at port 3001!")
