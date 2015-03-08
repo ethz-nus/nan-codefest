@@ -221,25 +221,7 @@ $( document ).ready(function() {
       });
     };
 
-    // var loc1 = $scope.events[0].latitude+","+$scope.events[0].longitude;
-    // var loc2 = $scope.events[1].latitude+","+$scope.events[1].longitude;
-
-    // $.ajax({
-    //     url: 'https://maps.googleapis.com/maps/api/distancematrix/json?origins='+loc1+'&destinations='+loc2+'&mode=bicycling&language=fr-FR&key=',
-    //     type: 'GET',
-    //     success: function(data) {
-    //       console.log(data);          
-    //     },
-    //     error: function(data) {
-    //       console.log(data);
-    //     }
-    //   });
-
-
-
-
-})
-
+  })
 
 
 .controller('SearchResultsCtrl', function($scope, $stateParams, Activities, Events) {

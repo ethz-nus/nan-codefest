@@ -96,6 +96,7 @@ angular.module('starter.services', [])
   }
 
   var search = function(dateKey, locationKey, categoryKey){
+      console.log(dateKey, locationKey, categoryKey);
       if(!events){
           promise = all();
           promise.then(function(data){
@@ -118,7 +119,7 @@ angular.module('starter.services', [])
               if ((locationKey != null) && !(event.location.indexOf(locationKey)!=-1) ){
                   return false;
               }
-              if ((categoryKey != null) && (categoryKey !== event.category) ){
+              if ((categoryKey != null) && (event.category.indexOf(categoryKey)!=-1) ){
                   return false;
               }
               return true;
