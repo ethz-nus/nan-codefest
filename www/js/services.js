@@ -1,6 +1,6 @@
 var serverSocket = "getaway.jellykaya.com:3001";
 angular.module('starter.services', [])
-.factory('ioSocketSetup', function($rootScope){
+.factory('ioSocket', function($rootScope){
   var ioSocket = io.connect(serverSocket);
   return {
     on: function (eventName, callback){
@@ -30,16 +30,18 @@ angular.module('starter.services', [])
 
   });
 
-  $scope.getActivities = function(){
-    var defer = $q.defer();
-    ioSocket.emit('getActivities', {});
-    ioSocket.on('receiveActivities', function(activities){
-      return defer.resolve(activities);
-    });
-    return defer.promise;
-  };
-
+  return {
+    getActivities: function(){
+      var defer = $q.defer();
+      ioSocket.emit('getActivities', {});
+      ioSocket.on('receiveActivities', function(activities){
+        return defer.resolve(activities);
+      });
+      return defer.promise;
+    }
+  }
 }])
+
 .factory('ActivityGroups', ['$scope', '$rootScope', 'ioSocket', function($scope, $rootScope, ioSocket) {
   ioSocket.on('connected', function(data){
 

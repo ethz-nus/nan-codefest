@@ -226,7 +226,7 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
   };
 })
 
-.controller('TTLCtrl', function($scope, LocationService, TimeToLocation) {
+.controller('TTLCtrl', function($scope, ioSocket, Activities, LocationService, TimeToLocation) {
 
     var lat, lon, error;
 
