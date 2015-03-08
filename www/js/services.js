@@ -44,6 +44,7 @@ angular.module('starter.services', [])
   var observerCallbacks = [];
 
   var notifyObservers = function(){
+    console.log("here");
       angular.forEach(observerCallbacks, function(callback){
           callback();
       });
@@ -127,6 +128,7 @@ angular.module('starter.services', [])
       observerCallbacks.push(callback);
     },
     resultEvents: function(){
+
         return resultEvents;
     }
   }
