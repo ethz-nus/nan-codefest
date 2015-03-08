@@ -116,10 +116,10 @@ angular.module('starter.services', [])
               if( dateTemp != null && Math.abs(dateTemp) > 2){
                   return false;
               }
-              if ((locationKey != null) && !(event.location.indexOf(locationKey)!=-1) ){
+              if ((locationKey != null) && (event.location.indexOf(locationKey)==-1) ){
                   return false;
               }
-              if ((categoryKey != null) && (event.category.indexOf(categoryKey)!=-1) ){
+              if ((categoryKey != null) && (event.category.indexOf(categoryKey)==-1) ){
                   return false;
               }
               return true;
@@ -437,6 +437,7 @@ angular.module('starter.services', [])
       targetEvent.groups.push(newGroup);
   },
     search: function(dateKey, locationKey, categoryKey){
+      console.log("search");
         resultEvents = events.filter( function(event){
             var dateTemp = null;
             if ( Object.prototype.toString.call(dateKey) === "[object Date]" ) {
@@ -449,10 +450,11 @@ angular.module('starter.services', [])
             if( dateTemp != null && Math.abs(dateTemp) > 4){
                 return false;
             }
-            if ((locationKey != null) && !(event.location.toLowerCase().indexOf(locationKey.toLowerCase())!=-1) ){
+            if ((locationKey != null) && event.location.toLowerCase().indexOf(locationKey.toLowerCase()) < 0 ){
                 return false;
             }
-            if ((categoryKey != null) && (categoryKey !== event.category) ){
+            console.log(event.category.indexOf(categoryKey));
+            if ((categoryKey != null) && event.category.indexOf(categoryKey) < 0 ){
                 return false;
             }
             return true;

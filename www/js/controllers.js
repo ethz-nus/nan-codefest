@@ -213,6 +213,8 @@ $( document ).ready(function() {
     // var dates = generate_free_start_times(12 * 60 * 60 * 1000, 24 * 60 * 60 * 1000, 15);
 
     $scope.searchEvents = function(category){
+      console.log("searchEvent");
+
       console.log($scope.search.date);
       $state.go('tab.search-result',{
         date: $scope.search.date,
@@ -226,6 +228,7 @@ $( document ).ready(function() {
 
 .controller('SearchResultsCtrl', function($scope, $stateParams, Activities, Events) {
   console.log($stateParams);
+  console.log("search ctrl");
   $scope.events = Activities.search($stateParams.date, $stateParams.location, $stateParams.category);
 
   $scope.isAttending = function(event){

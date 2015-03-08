@@ -129,9 +129,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 
   // if none of the above states are matched, use this as the fallback
-  if(window.localStorage['userid'])
+  // if(window.localStorage['userid'])
     $urlRouterProvider.otherwise('/tab/search');
-  else
-    $urlRouterProvider.otherwise('/welcome');
+  // else
+  //   $urlRouterProvider.otherwise('/welcome');
 
 });
