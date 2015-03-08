@@ -130,13 +130,13 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
           });
           bounds.extend(loc);
         }
-        var listener = google.maps.event.addListener($scope.map, "idle", function() {
+        var listener1 = google.maps.event.addListener($scope.map, "idle", function() {
             $scope.map.fitBounds(bounds);
-            google.maps.event.removeListener(listener);
+            google.maps.event.removeListener(listener1);
         });
-        var listener = google.maps.event.addListener($scope.map, "idle", function() {
+        var listener2 = google.maps.event.addListener($scope.map, "idle", function() {
             if ($scope.map.getZoom() > 16) $scope.map.setZoom(16);
-            google.maps.event.removeListener(listener);
+            google.maps.event.removeListener(listener2);
         });
       };
 
@@ -376,6 +376,6 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
          googleLogin.getAndSendClientEmail();
         window.location.href = "/#/tab/search";
       });
-    
+
   };
 }]);
