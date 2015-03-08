@@ -231,7 +231,7 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
   $scope.deregister = function(event){
     Events.quitEvent(event, $scope.userId);
     $scope.events = Events.allAttending($scope.userId);
-  };
+};
 
   $scope.sortByTime();
 })
@@ -314,7 +314,14 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
     var lat, lon, error;
 
     ioSocket.open();
-    
+
+    $scope.getActivities = function(){
+        var promise = Activities.getActivities();
+        promise.then(function(data){
+            console.log(data);
+        })
+    }
+
     window.onbeforeunload = function(){
         ioSocket.close();
     }

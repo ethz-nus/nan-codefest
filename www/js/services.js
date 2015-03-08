@@ -4,7 +4,7 @@ angular.module('starter.services', [])
   var ioSocket;
   return {
     on: function (eventName, callback){
-      if (!ioSocket){ var ioSocket = io.connect(serverSocket)}
+      if (!ioSocket){ var ioSocket = io.connect(serverSocket, {'sync disconnect on unload': true})}
       ioSocket.on(eventName, function(){
         var args = arguments;
         $rootScope.$apply(function () {
@@ -13,6 +13,7 @@ angular.module('starter.services', [])
       });
     },
     emit: function (eventName, data, callback){
+      if (!ioSocket){ var ioSocket = io.connect(serverSocket, {'sync disconnect on unload': true})}
       ioSocket.emit(eventName, data, function () {
         var args = arguments;
         $rootScope.$apply(function () {
@@ -23,10 +24,10 @@ angular.module('starter.services', [])
       });
     },
     open: function(){
-        var ioSocket = io.connect(serverSocket);
+        var ioSocket = io.connect(serverSocket, {'sync disconnect on unload': true});
     },
     close: function (){
-        ioSocket.close();
+        if(ioSocket) ioSocket.close();
     }
  };
 })
@@ -44,6 +45,7 @@ angular.module('starter.services', [])
       ioSocket.emit('getActivities', {});
       ioSocket.on('receiveActivities', function(activities){
         ioSocket.close();
+        console.log(activities);
         return defer.resolve(activities);
       });
       ioSocket.close();
