@@ -1,6 +1,8 @@
 angular.module('starter.controllers',['ionic'])
 
 .controller('MapCtrl', function($scope, $ionicLoading, $ionicPopup, $compile, Events) {
+      $("ion-nav-bar").show();
+
       function initialize() {
         console.log("load map");
         var myLatlng = new google.maps.LatLng(47.3786569,8.5487367);
@@ -97,14 +99,16 @@ angular.module('starter.controllers',['ionic'])
 })
 
 .controller('SearchCtrl', function($scope, Events, AccountManager){
+      $("ion-nav-bar").show();
+
     $scope.userId = AccountManager.getUserId();
     $scope.events = Events.all();
     $scope.search = {
       date: new Date(),
-      location: 'foo'
+      location: ''
     };
 
-    $scope.search = function(){
+    $scope.searchEvents = function(){
       $scope.filteredEvents = $scope.events.filter( function(event){
           var dateTemp = null;
           if ( Object.prototype.toString.call($scope.search.date) === "[object Date]" ) {
@@ -116,10 +120,10 @@ angular.module('starter.controllers',['ionic'])
           }
           if( dateTemp != null && dateTemp.getDate() - 1 != 0)
             return false;
-          else if (!isNaN($scope.location) && (!$scope.search.location.indexOf(event.location) ||  !event.location.indexOf($scope.search.location)) )
+          else if ($scope.location !=null && (!$scope.search.location.indexOf(event.location) ||  !event.location.indexOf($scope.search.location)) )
             return false;
-          else if ( !isNaN($scope.category) && ($scope.search.catalog != event.catalog) )
-            return false;
+          // else if ( $scope.category  && ($scope.search.catalog != event.catalog) )
+          //   return false;
           else return true;
         });
       window.location.href = "#/tab/results";
@@ -277,5 +281,5 @@ angular.module('starter.controllers',['ionic'])
 })
 
 .controller('WelcomeCtrl', function($scope){
-  
+    $("ion-nav-bar").hide();
 });

@@ -33,6 +33,55 @@
 	margin: 30px auto;
 }
 
+#category-list{
+	padding: 10px;
+	color: white;
+}
+
+#category-list .col{
+
+	padding: 10px;
+	text-align: center;
+
+}
+
+section > div{
+/*	width: 80%;
+	height: 80%;*/
+	min-height:60px;
+	padding-top: 30px;
+	padding-bottom: 30px;
+}
+
+
+div.all{
+	background-color: #886aea
+}
+
+div.parade{
+	background-color: #E8B33A;
+}
+
+div.music{
+	background-color: orange;
+}
+
+div.museum{
+	background-color: #387ef5;
+}
+
+div.sports{
+	background-color: #FF4938
+}
+
+div.flower{
+	background-color: #33cd5f;
+}
+
+#category-list span{
+	font-size: 40px;
+}
+
 #result-list .ion-checkmark-round{
 	right:40px;
 	font-size: 30px;
