@@ -274,4 +274,8 @@ angular.module('starter.controllers',['ionic'])
     }
 
     $scope.getLocation();
+})
+
+.controller('WelcomeCtrl', function($scope){
+  
 });

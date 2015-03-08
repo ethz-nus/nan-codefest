@@ -128,7 +128,7 @@
 }
 
 #login-btn {
-	background-color: orange;
+	background-color: #387ef5;
 	color: white;
 	font-size: 18px;
 	font-weight: bold;
@@ -143,8 +143,8 @@
 
 #welcome-page{
 	/*background-color: orange;*/
-	background-image: url('../img/cooperate_blur2.jpg');
-	background-position: center;
-	background-size: 170%;
+	background-image: url('/img/tumblr blur.jpg');
+	background-position: right;
+	background-size: 180%;
 }
 
