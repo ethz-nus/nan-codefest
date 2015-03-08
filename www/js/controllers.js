@@ -174,9 +174,9 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
     // $scope.centerOnMe();
 })
 
-.controller('SearchCtrl', function($scope, $state, Events, AccountManager){
+.controller('SearchCtrl', function($scope, $state, Events){
 
-    $scope.userId = AccountManager.getUserId();
+    // $scope.userId = AccountManager.getUserId();
     $scope.events = Events.all();
     $scope.search ={
       date: null,
@@ -231,7 +231,7 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
   $scope.deregister = function(event){
     Events.quitEvent(event, $scope.userId);
     $scope.events = Events.allAttending($scope.userId);
-  };
+};
 
   $scope.sortByTime();
 })
@@ -314,7 +314,14 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
     var lat, lon, error;
 
     ioSocket.open();
-    
+
+    $scope.getActivities = function(){
+        var promise = Activities.getActivities();
+        promise.then(function(data){
+            console.log(data);
+        })
+    }
+
     window.onbeforeunload = function(){
         ioSocket.close();
     }
@@ -360,12 +367,15 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 })
 
 
-.controller('WelcomeCtrl', ['$scope', 'googleLogin', function($scope, googleLogin){
-    $("ion-nav-bar").hide();
+.controller('WelcomeCtrl', ['$scope', 'googleLogin', 'ioSocket', function($scope, googleLogin, ioSocket){
+  $("ion-nav-bar").hide();
   $scope.login = function(){
+
     var result = googleLogin.login();
-    result.then(function(val){
-      window.location.href = "/#/tab/search";
-    });
+      result.then(function(val){
+         googleLogin.getAndSendClientEmail();
+        window.location.href = "/#/tab/search";
+      });
+    
   };
 }]);
