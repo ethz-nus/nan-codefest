@@ -204,7 +204,7 @@ io.on('connection', function (socket) {
   });
   socket.on('getActivities', function(){
     var activities = [];
-    Activity.find({}).exec(function(err, activity){
+    Activity.find({}).limit(100).exec(function(err, activity){
       activities.push(activity);
     });
     console.log('sending Activities' + activities);
