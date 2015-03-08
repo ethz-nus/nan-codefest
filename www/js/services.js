@@ -355,7 +355,7 @@ angular.module('starter.services', [])
                     dateTemp = Math.floor((Date.parse(dateKey) - Date.parse(event.time))/(1000*60*60*24));
                 }
             }
-            if( dateTemp != null && Math.abs(dateTemp) > 2){
+            if( dateTemp != null && Math.abs(dateTemp) > 4){
                 return false;
             }
             if ((locationKey != null) && !(event.location.indexOf(locationKey)!=-1) ){
