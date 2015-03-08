@@ -5,7 +5,7 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
             scopes: ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/calendar", "https://www.googleapis.com/auth/plus.login"]
         });
     })
-.controller('MapCtrl', function($scope, $ionicLoading, $ionicPopup, $compile, Events) {
+.controller('MapCtrl', function($scope, $ionicLoading, $ionicPopup, $compile, Activities, Events) {
       $("ion-nav-bar").show();
 
       function initialize() {
@@ -81,7 +81,7 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
       };
 
       $scope.clickMarker = function(id) {
-        evt = Events.all()[id];
+        evt = events[id];
         $ionicPopup.alert({
             title: evt.title,
             template: evt.category + ' Event At ' + evt.time
@@ -102,9 +102,12 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
         $scope.setAllMap(null);
       };
 
+      var events;
+
       $scope.addEventMarkers = function(){
         console.log(1);
-        var events = Events.resultEvents();
+        events = Activities.resultEvents();
+        console.log(events);
         var bounds = new google.maps.LatLngBounds();
         for (key in events){
           var evt = events[key];
@@ -130,13 +133,13 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
           });
           bounds.extend(loc);
         }
-        var listener = google.maps.event.addListener($scope.map, "idle", function() {
+        var listener1 = google.maps.event.addListener($scope.map, "idle", function() {
             $scope.map.fitBounds(bounds);
-            google.maps.event.removeListener(listener);
+            google.maps.event.removeListener(listener1);
         });
-        var listener = google.maps.event.addListener($scope.map, "idle", function() {
+        var listener2 = google.maps.event.addListener($scope.map, "idle", function() {
             if ($scope.map.getZoom() > 16) $scope.map.setZoom(16);
-            google.maps.event.removeListener(listener);
+            google.maps.event.removeListener(listener2);
         });
       };
 
@@ -167,17 +170,17 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 
     $scope.clearMarkers();
     $scope.addEventMarkers();
-    Events.registerObserverCallback(function(){
+    Activities.registerObserverCallback(function(){
       $scope.clearMarkers();
       $scope.addEventMarkers();
     });
     // $scope.centerOnMe();
 })
 
-.controller('SearchCtrl', function($scope, $state, Events){
+.controller('SearchCtrl', function($scope, $state, Activities, Events){
 
     // $scope.userId = AccountManager.getUserId();
-    $scope.events = Events.all();
+
     $scope.search ={
       date: null,
       location: null
@@ -210,9 +213,9 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 })
 
 
-.controller('SearchResultsCtrl', function($scope, $stateParams, Events) {
+.controller('SearchResultsCtrl', function($scope, $stateParams, Activities, Events) {
 
-    $scope.events = Events.search($stateParams.date, $stateParams.location, $stateParams.category);
+    $scope.events = Activities.search($stateParams.date, $stateParams.location, $stateParams.category);
 
     $scope.isAttending = function(event){
       return Events.isAttending(event, $scope.userId);
@@ -253,7 +256,7 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 })
 
 .controller('EventDetailCtrl', function($scope, $stateParams, Events, AccountManager) {
-  $scope.event = Events.get($stateParams.eventId);
+  $scope.event = Activities.get($stateParams.eventId);
   $scope.userId = AccountManager.getUserId();
   $scope.registeredGroup = Events.attendingGroup($scope.event, $scope.userId);
   $scope.selectedGroupIndex = $scope.registeredGroup? $scope.event.groups.indexOf($scope.registeredGroup) : -1;
@@ -392,6 +395,6 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
          googleLogin.getAndSendClientEmail();
         window.location.href = "/#/tab/search";
       });
-    
+
   };
 }]);
