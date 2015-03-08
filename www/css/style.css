@@ -1,1 +1,149 @@
 /* Empty. Add your own CSS if you like */
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+.scroll {
+  height: 100%;
+}
+
+#search-form {
+	position: absolute;
+	top:50px;
+	z-index: 10;
+	margin:0 auto;
+
+}
+
+/*Search*/
+#search .info-label{
+	color: #387ef5;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+#search .row{
+	padding: 0;
+}
+
+#search-btn{
+	width: 60%;
+	margin: 30px auto;
+}
+
+#result-list .ion-checkmark-round{
+	right:40px;
+	font-size: 30px;
+	color:green;
+}
+
+.group-list .tag{ 
+	font-size: 30px;
+	color: #387ef5;
+}
+
+.group-list p{
+	padding-left: 20px;
+	color: black;
+}
+
+.group-list i.green{
+	color: green;
+}
+
+.group-list .icon.small{
+	top: 20px;
+	font-size: 10px;
+	color: green;
+}
+
+.group-info span{
+	color: #444;
+	font-size: 15px;
+	margin-right: 3px;
+}
+
+.group-info .ion-clock{
+	margin-left: 15px;
+}
+
+.ion-ios-close-outline{
+	color: #FF4938;
+}
+
+/*Events*/
+.event-profile .padding{
+	padding-top: 5px;
+}
+
+.event-profile{
+	width: 100%;
+}
+
+
+.event-caption{
+	font-size: 20;
+	font-weight: bold;
+	color: white;
+	padding: 0 0 0 0;
+}
+
+.event-catalog{
+	margin-right: 5px;
+	color: white;
+	background-color: orange;
+}
+
+.event-date{
+	background-color: #FF4938;
+}
+
+.event-description{
+	background-color: #9FB9FF;
+	min-height: 60px;
+}
+
+
+/*welcome page*/
+#welcome-center{
+	position: relative;
+	top:15%;
+}
+
+#welcome-center img{
+	height:100px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#welcome-title{
+	color:white;
+	font-family: 'Roboto', sans-serif;	font-size: 30px;
+	text-align: center;
+	padding-bottom:80px; 
+
+}
+
+#login-btn {
+	background-color: #387ef5;
+	color: white;
+	font-size: 18px;
+	font-weight: bold;
+	border:0;
+	width:90%;
+	max-width:300px;
+	border-radius: 6px;
+	margin-left: auto;
+	margin-right: auto;
+	/*box-shadow: 0px 1px 10px #AAA;*/
+}	
+
+#welcome-page{
+	/*background-color: orange;*/
+	background-image: url('/img/tumblr blur.jpg');
+	background-position: right;
+	background-size: 180%;
+}

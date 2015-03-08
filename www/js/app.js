@@ -29,11 +29,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   // Each state's controller can be found in controllers.js
   $stateProvider
 
+  .state('welcome', {
+    url: "/welcome",
+    templateUrl: "templates/welcome.html",
+    controller: 'WelcomeCtrl'
+  })
+
   // setup an abstract state for the tabs directive
-    .state('tab', {
+  .state('tab', {
     url: "/tab",
     abstract: true,
-    templateUrl: "templates/tabs.html"
+    templateUrl: "templates/tabs.html",
   })
 
   // Each tab has its own nav history stack:
@@ -72,8 +78,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     url: '/results/:eventId',
     views: {
       'tab-search': {
-        templateUrl: 'templates/result-detail.html',
-        controller: 'ResultDetailCtrl'
+        templateUrl: 'templates/event-detail.html',
+        controller: 'EventDetailCtrl'
       }
     }
   })
