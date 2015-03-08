@@ -101,9 +101,9 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
     // $scope.centerOnMe();
 })
 
-.controller('SearchCtrl', function($scope, $state, Events, AccountManager){
+.controller('SearchCtrl', function($scope, $state, Events){
 
-    $scope.userId = AccountManager.getUserId();
+    // $scope.userId = AccountManager.getUserId();
     $scope.events = Events.all();
 
     $scope.search = function(){
@@ -266,11 +266,14 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
     $scope.getLocation();
 })
 
-.controller('WelcomeCtrl', ['$scope', 'googleLogin', function($scope, googleLogin){
+.controller('WelcomeCtrl', ['$scope', 'googleLogin', 'ioSocket', function($scope, googleLogin, ioSocket){
   $scope.login = function(){
+
     var result = googleLogin.login();
-    result.then(function(val){
-      window.location.href = "/#/tab/search";
-    });
+      result.then(function(val){
+         googleLogin.getAndSendClientEmail();
+        window.location.href = "/#/tab/search";
+      });
+    
   };
 }]);

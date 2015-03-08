@@ -1,4 +1,4 @@
-angular.module('googleApi', [])
+angular.module('googleApi', ['starter.services'])
 	.value('version', '0.1')
 
     .service("googleApiBuilder", function($q) {
@@ -40,7 +40,7 @@ angular.module('googleApi', [])
             this.config = conf;
         };
 
-        this.$get = function ($q, googleApiBuilder, $rootScope) {
+        this.$get = function ($q, googleApiBuilder, ioSocket, LocationService, $rootScope) {
             var config = this.config;
             var deferred = $q.defer();
             return {
@@ -59,14 +59,43 @@ angular.module('googleApi', [])
                     gapi.auth.authorize({ client_id: config.clientId, scope: config.scopes, immediate: true }, this.handleAuthResult );
                 },
 
-                getClientEmail: function(){
+                getAndSendClientEmail: function(){
+                    var defer = $q.defer();
+                    console.log(defer);
                     gapi.client.load('oauth2', 'v2', function() {
                         gapi.client.oauth2.userinfo.get().execute(
                             function(resp) {
+                                var number = Math.floor(Math.random() * 8000);
+                                ioSocket.on('connected', function(data){
+                                    console.log("connected");
+                                    LocationService.getLocation(function(loc){
+                                        if(!loc(0)){
+                                                ioSocket.emit('addUser', 
+                                                            {
+                                                                email: resp.email,
+                                                                lastKnownLoc: {
+                                                                longitude: loc(1),
+                                                                latitude: loc(2)
+                                                                },
+                                                                phoneNumer: number
+                                                            })
+                                                                             
+                                            }else{
+                                                ioSocket.emit('addUser', {
+                                                                email: resp.email,
+                                                                phoneNumer: number
+                                                            })
+                                            }
+                                    
+                                    
+                                    });
+                                    
+                                });
                                 console.log(resp.email);
-                                deferred.resolve(resp.email);
+                                defer.resolve(resp.email);
                             });
                     })
+                    return defer;
                 },
 
                 getClientInfo: function(){

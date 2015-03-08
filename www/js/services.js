@@ -1,3 +1,4 @@
+// var serverSocket = "getaway.jellykaya.com:3001";
 var serverSocket = "getaway.jellykaya.com:3001";
 angular.module('starter.services', [])
 .factory('ioSocket', function($rootScope){
@@ -27,7 +28,7 @@ angular.module('starter.services', [])
 .factory('Activities', ['$q', '$scope', '$rootScope', 'ioSocket', function($q, $scope, $rootScope, ioSocket) {
 
   ioSocket.on('connected', function(data){
-
+    console.log("activities connected");
   });
 
   return {
