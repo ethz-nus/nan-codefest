@@ -61,35 +61,33 @@ angular.module('googleApi', ['starter.services'])
 
                 getAndSendClientEmail: function(){
                     var defer = $q.defer();
-                    console.log(defer);
                     gapi.client.load('oauth2', 'v2', function() {
                         gapi.client.oauth2.userinfo.get().execute(
                             function(resp) {
-                                var number = Math.floor(Math.random() * 8000);
+                                var number = Math.floor(Math.random() * 800000000);
                                 ioSocket.on('connected', function(data){
-                                    console.log("connected");
                                     LocationService.getLocation(function(loc){
-                                        if(!loc(0)){
-                                                ioSocket.emit('addUser', 
+                                        if(!loc[0]){
+                                                ioSocket.emit('addUser',
                                                             {
                                                                 email: resp.email,
                                                                 lastKnownLoc: {
-                                                                longitude: loc(1),
-                                                                latitude: loc(2)
+                                                                longitude: loc[1],
+                                                                latitude: loc[2]
                                                                 },
                                                                 phoneNumer: number
                                                             })
-                                                                             
+
                                             }else{
                                                 ioSocket.emit('addUser', {
                                                                 email: resp.email,
                                                                 phoneNumer: number
                                                             })
                                             }
-                                    
-                                    
+
+
                                     });
-                                    
+
                                 });
                                 console.log(resp.email);
                                 defer.resolve(resp.email);

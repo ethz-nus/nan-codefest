@@ -5,7 +5,7 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
             scopes: ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/calendar", "https://www.googleapis.com/auth/plus.login"]
         });
     })
-.controller('MapCtrl', function($scope, $ionicLoading, $ionicPopup, $compile, Events) {
+.controller('MapCtrl', function($scope, $ionicLoading, $ionicPopup, $compile, Activities, Events) {
       $("ion-nav-bar").show();
 
       function initialize() {
@@ -81,7 +81,7 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
       };
 
       $scope.clickMarker = function(id) {
-        evt = Events.all()[id];
+        evt = Activities.get(id);
         $ionicPopup.alert({
             title: evt.title,
             template: evt.category + ' Event At ' + evt.time
@@ -102,43 +102,58 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
         $scope.setAllMap(null);
       };
 
+      var events;
+
       $scope.addEventMarkers = function(){
-        console.log(1);
-        var events = Events.resultEvents();
-        var bounds = new google.maps.LatLngBounds();
-        for (key in events){
+        events = Activities.resultEvents();
+        if(!events){
+            promise = Activities.all();
+            promise.then(function(data){
+                console.log('all');
+                events = data;
+                doMapProcessing();
+            });
+        } else {
+            doMapProcessing();
+        }
+      };
+
+    function doMapProcessing(){
+      var bounds = new google.maps.LatLngBounds();
+      for (key in events){
           var evt = events[key];
+          console.log(evt);
           var loc = new google.maps.LatLng(evt.latitude, evt.longitude);
           var marker = new google.maps.Marker({
-            position: loc,
-            map: $scope.map,
-            title: evt.title,
-            id: evt.id
+              position: loc,
+              map: $scope.map,
+              title: evt.title,
+              id: evt.id
           });
 
           $scope.markers.push(marker);
 
           google.maps.event.addListener(marker, 'click', function() {
-            var contentString = "<div><a ng-click='clickMarker(" + this.id
-            + ")'>Click to know more about " + this.title + "</a></div>";
-            var compiled = $compile(contentString)($scope);
-            var infowindow = new google.maps.InfoWindow({
-                content: compiled[0]
-            });
-            infowindow.setContent(compiled[0]);
-            infowindow.open($scope.map, this);
+              var contentString = "<div><a ng-click='clickMarker(\"" + this.id
+              + "\")'>Click to know more about " + this.title + "</a></div>";
+              var compiled = $compile(contentString)($scope);
+              var infowindow = new google.maps.InfoWindow({
+                  content: compiled[0]
+              });
+              infowindow.setContent(compiled[0]);
+              infowindow.open($scope.map, this);
           });
           bounds.extend(loc);
-        }
-        var listener = google.maps.event.addListener($scope.map, "idle", function() {
-            $scope.map.fitBounds(bounds);
-            google.maps.event.removeListener(listener);
-        });
-        var listener = google.maps.event.addListener($scope.map, "idle", function() {
-            if ($scope.map.getZoom() > 16) $scope.map.setZoom(16);
-            google.maps.event.removeListener(listener);
-        });
-      };
+      }
+      var listener1 = google.maps.event.addListener($scope.map, "idle", function() {
+          $scope.map.fitBounds(bounds);
+          google.maps.event.removeListener(listener1);
+      });
+      var listener2 = google.maps.event.addListener($scope.map, "idle", function() {
+          if ($scope.map.getZoom() > 16) $scope.map.setZoom(16);
+          google.maps.event.removeListener(listener2);
+      });
+    }
 
       $scope.setGeoMarker = function(){
         var pinColor = "387ef5";
@@ -167,17 +182,18 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 
     $scope.clearMarkers();
     $scope.addEventMarkers();
-    Events.registerObserverCallback(function(){
+
+    Activities.registerObserverCallback(function(){
       $scope.clearMarkers();
       $scope.addEventMarkers();
     });
     // $scope.centerOnMe();
 })
 
-.controller('SearchCtrl', function($scope, $state, Events){
+.controller('SearchCtrl', function($scope, $state, Activities, Events){
 
     // $scope.userId = AccountManager.getUserId();
-    $scope.events = Events.all();
+
     $scope.search ={
       date: null,
       location: null
@@ -211,9 +227,9 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 })
 
 
-.controller('SearchResultsCtrl', function($scope, $stateParams, Events) {
+.controller('SearchResultsCtrl', function($scope, $stateParams, Activities, Events) {
 
-    $scope.events = Events.search($stateParams.date, $stateParams.location, $stateParams.category);
+    $scope.events = Activities.search($stateParams.date, $stateParams.location, $stateParams.category);
 
     $scope.isAttending = function(event){
       return Events.isAttending(event, $scope.userId);
@@ -254,7 +270,7 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 })
 
 .controller('EventDetailCtrl', function($scope, $stateParams, Events, AccountManager) {
-  $scope.event = Events.get($stateParams.eventId);
+  $scope.event = Activities.get($stateParams.eventId);
   $scope.userId = AccountManager.getUserId();
   $scope.registeredGroup = Events.attendingGroup($scope.event, $scope.userId);
   $scope.selectedGroupIndex = $scope.registeredGroup? $scope.event.groups.indexOf($scope.registeredGroup) : -1;
@@ -393,6 +409,6 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
          googleLogin.getAndSendClientEmail();
         window.location.href = "/#/tab/search";
       });
-    
+
   };
 }]);
