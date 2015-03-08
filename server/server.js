@@ -204,11 +204,15 @@ io.on('connection', function (socket) {
   });
   socket.on('getActivities', function(){
     var activities = [];
-    Activity.find({}).limit(100).exec(function(err, activity){
+    Activity.find({}).limit(1000).exec(function(err, activity){
       activities.push(activity);
+    }).addCallback(function(err){
+      console.log('sending Activities' + activities);
+      socket.emit('receiveActivities', activities);
     });
-    console.log('sending Activities' + activities);
-    socket.emit('receiveActivities', activities);
+
+
+
   });
 
   /*
@@ -257,9 +261,10 @@ io.on('connection', function (socket) {
       transport: query.transport
     }).exec(function(err, activityGroup){
       activityGroups.push(activityGroup);
+    }).addCallback(function(err){
+      console.log('sending ActivityGroups' + activityGroups);
+      socket.emit('receiveActivityGroups', activityGroups);
     });
-    console.log('sending ActivityGroups' + activityGroups);
-    socket.emit('receiveActivityGroups', activityGroups);
   });
 
   //Signal closure of socket
