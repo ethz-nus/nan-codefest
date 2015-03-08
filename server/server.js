@@ -26,7 +26,8 @@ https://developers.google.com/maps/documentation/geocoding/#JSON
 */
 
 var activitySchema = mongoose.Schema({
-  activityId: String,
+  activityName: String,
+  activityId: Number,
   startTime: Date,
   endTime: Date,
   loc: {
