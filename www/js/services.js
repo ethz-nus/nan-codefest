@@ -50,80 +50,87 @@ angular.module('starter.services', [])
       });
   };
 
-  return {
-    all: function(){
+  var all = function(){
       if(events){ return defer.resolve(events);}
       var defer = $q.defer();
       ioSocket.open();
       ioSocket.emit('getActivities', {});
       ioSocket.on('receiveActivities', function(activities){
-        ioSocket.close();
-        events = [];
-        for (var i=0; i<activities[0].length; i++){
-            var tempEvt = activities[0][i];
-            events.push({
-                title: tempEvt.activityId,
-                time: tempEvt.startTime,
-                pic: tempEvt.picUrl,
-                category: tempEvt.categories,
-                latitude: tempEvt.loc.longitude,
-                longitude: tempEvt.loc.latitude,
-                location: tempEvt.loc.formattedAdd,
-                id: tempEvt._id
-            });
-            resultEvents = events;
-        }
-        return defer.resolve(events);
+          ioSocket.close();
+          events = [];
+          for (var i=0; i<activities[0].length; i++){
+              var tempEvt = activities[0][i];
+              events.push({
+                  title: tempEvt.activityId,
+                  time: tempEvt.startTime,
+                  pic: tempEvt.picUrl,
+                  category: tempEvt.categories,
+                  latitude: tempEvt.loc.longitude,
+                  longitude: tempEvt.loc.latitude,
+                  location: tempEvt.loc.formattedAdd,
+                  id: tempEvt._id
+              });
+              resultEvents = events;
+          }
+          return defer.resolve(events);
       });
       //ioSocket.close();
       return defer.promise;
-    },
-    get: function(eventId) {
+  }
+
+  var get = function(eventId) {
       if(!events){
-          promise = this.all()
+          promise = all()
           promise.then(function(data){
-              this.get(eventId)
+              get(eventId)
           });
       } else {
-        for (var i = 0; i < events.length; i++) {
-          if (events[i].id === eventId) {
-            return events[i];
+          for (var i = 0; i < events.length; i++) {
+              if (events[i].id === eventId) {
+                  return events[i];
+              }
           }
-        }
-        return null;
+          return null;
       }
-    },
-    search: function(dateKey, locationKey, categoryKey){
+  }
+
+  var search = function(dateKey, locationKey, categoryKey){
       if(!events){
-        promise = this.all();
-        promise.then(function(data){
-            this.search(dateKey, locationKey, categoryKey)
-        });
+          promise = all();
+          promise.then(function(data){
+              console.log(this);
+              search(dateKey, locationKey, categoryKey);
+          });
       } else {
-        resultEvents = events.filter( function(event){
-            var dateTemp = null;
-            if ( Object.prototype.toString.call(dateKey) === "[object Date]" ) {
-                // it is a date
-                if ( !isNaN( dateKey.getTime() ) ) {  // d.valueOf() could also work
-                    // date is valid
-                    dateTemp = Math.floor((Date.parse(dateKey) - Date.parse(event.time))/(1000*60*60*24));
-                }
-            }
-            if( dateTemp != null && Math.abs(dateTemp) > 2){
-                return false;
-            }
-            if ((locationKey != null) && !(event.location.indexOf(locationKey)!=-1) ){
-                return false;
-            }
-            if ((categoryKey != null) && (categoryKey !== event.category) ){
-                return false;
-            }
-            return true;
-        });
-        notifyObservers();
-        return resultEvents;
+          resultEvents = events.filter( function(event){
+              var dateTemp = null;
+              if ( Object.prototype.toString.call(dateKey) === "[object Date]" ) {
+                  // it is a date
+                  if ( !isNaN( dateKey.getTime() ) ) {  // d.valueOf() could also work
+                      // date is valid
+                      dateTemp = Math.floor((Date.parse(dateKey) - Date.parse(event.time))/(1000*60*60*24));
+                  }
+              }
+              if( dateTemp != null && Math.abs(dateTemp) > 2){
+                  return false;
+              }
+              if ((locationKey != null) && !(event.location.indexOf(locationKey)!=-1) ){
+                  return false;
+              }
+              if ((categoryKey != null) && (categoryKey !== event.category) ){
+                  return false;
+              }
+              return true;
+          });
+          notifyObservers();
+          return resultEvents;
       }
-    },
+  }
+
+  return {
+    all: all,
+    get: get,
+    search: search,
     registerObserverCallback: function(callback){
       observerCallbacks.push(callback);
     },
@@ -337,12 +344,12 @@ angular.module('starter.services', [])
   });
 
   var attendingGroup = function(event,userId){
-    for(var i = 0; i < event.groups.length; i++){
+    /*for(var i = 0; i < event.groups.length; i++){
       var group = event.groups[i];
       if(group.users.indexOf(userId) > -1) {
         return group;
       }
-    }
+  }*/
     return null;
   }
 

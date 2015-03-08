@@ -122,7 +122,6 @@ $( document ).ready(function() {
       var bounds = new google.maps.LatLngBounds();
       for (key in events){
           var evt = events[key];
-          console.log(evt);
           var loc = new google.maps.LatLng(evt.latitude, evt.longitude);
           var marker = new google.maps.Marker({
               position: loc,
@@ -219,7 +218,7 @@ $( document ).ready(function() {
       });
     };
 
-    
+
 
   })
 
@@ -266,7 +265,7 @@ $( document ).ready(function() {
   $scope.sortByTime();
 })
 
-.controller('EventDetailCtrl', function($scope, $stateParams, Events, AccountManager) {
+.controller('EventDetailCtrl', function($scope, $stateParams, Events, Activities, AccountManager) {
   $scope.event = Activities.get($stateParams.eventId);
   $scope.userId = AccountManager.getUserId();
   $scope.registeredGroup = Events.attendingGroup($scope.event, $scope.userId);
