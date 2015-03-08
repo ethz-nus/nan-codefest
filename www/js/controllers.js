@@ -272,6 +272,9 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 })
 
 .controller('WelcomeCtrl', ['$scope', 'googleLogin', function($scope, googleLogin){
-  $scope.login = function(){googleLogin.login()};
+  $scope.login = function(){
+    var result = googleLogin.login();
+    console.log(result);
+  };
 }]);
 
