@@ -52,8 +52,8 @@ var createActivity = function (activity, locData){
     activityId: activity.activityId,
     startTime: Date.parse(activity.startTime),
     loc: {
-      longitude: locData.results[0].geometry.location.lat,
-      latitude: locData.results[0].geometry.location.lng,
+      longitude: locData.results[0].geometry.location.lng,
+      latitude: locData.results[0].geometry.location.lat,
       formattedAdd: locData.results[0].formatted_address
     },
     categories: activity.categories,
