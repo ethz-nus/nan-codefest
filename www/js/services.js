@@ -44,6 +44,7 @@ angular.module('starter.services', [])
   var observerCallbacks = [];
 
   var notifyObservers = function(){
+    console.log("here");
       angular.forEach(observerCallbacks, function(callback){
           callback();
       });
@@ -57,7 +58,7 @@ angular.module('starter.services', [])
       ioSocket.emit('getActivities', {});
       ioSocket.on('receiveActivities', function(activities){
         ioSocket.close();
-        for (var i=0; i<1000; i++){
+        for (var i=0; i<activities[0].length; i++){
             var tempEvt = activities[0][i];
             events = [];
             events.push({
@@ -122,6 +123,7 @@ angular.module('starter.services', [])
       observerCallbacks.push(callback);
     },
     resultEvents: function(){
+      var defer = $q.defer();
         if(!resultEvents){
             promise = this.all()
             //
