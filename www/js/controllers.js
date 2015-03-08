@@ -1,5 +1,10 @@
-angular.module('starter.controllers',['ionic'])
-
+angular.module('starter.controllers',['ionic', 'googleApi'])
+.config(function(googleLoginProvider) {
+        googleLoginProvider.configure({
+            clientId: '892332260770-n6l62ol28do1a44f5jkstg5vbnfmsbbt.apps.googleusercontent.com',
+            scopes: ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/calendar", "https://www.googleapis.com/auth/plus.login"]
+        });
+    })
 .controller('MapCtrl', function($scope, $ionicLoading, $ionicPopup, $compile, Events) {
       function initialize() {
         console.log("load map");
@@ -276,6 +281,6 @@ angular.module('starter.controllers',['ionic'])
     $scope.getLocation();
 })
 
-.controller('WelcomeCtrl', function($scope){
-  
-});
+.controller('WelcomeCtrl', ['$scope', 'googleLogin', function($scope, googleLogin){
+  $scope.login = function(){googleLogin.login()};
+}]);

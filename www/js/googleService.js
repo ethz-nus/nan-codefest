@@ -5,7 +5,7 @@ angular.module('google.service', ['googleApi'])
             scopes: ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/calendar", "https://www.googleapis.com/auth/plus.login"]
         });
     })
-    .factory('googleCtrl', ['$scope', 'googleLogin', 'googleCalendar', 'googlePlus', function ($scope, googleLogin, googleCalendar, googlePlus) {
+    .factory('googleService', ['$scope', 'googleLogin', 'googleCalendar', 'googlePlus', function ($scope, googleLogin, googleCalendar, googlePlus) {
 
         $scope.login = function () {
             googleLogin.login();
