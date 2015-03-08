@@ -59,11 +59,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   })
 
   .state('tab.search-result', {
-    url: '/results',
+    params: {
+        date: null,
+        location: null,
+        category: null
+    },
     views: {
       'tab-search': {
         templateUrl: 'templates/search-results.html',
-        controller: 'SearchCtrl'
+        controller: 'SearchResultsCtrl'
       }
     }
   })

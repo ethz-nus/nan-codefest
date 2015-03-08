@@ -153,8 +153,29 @@ angular.module('starter.services', [])
       }
       console.log(newGroup);
       targetEvent.groups.push(newGroup);
+  },
+    search: function(dateKey, locationKey, categoryKey){
+        return events.filter( function(event){
+            var dateTemp = null;
+            if ( Object.prototype.toString.call(dateKey) === "[object Date]" ) {
+                // it is a date
+                if ( !isNaN( dateKey.getTime() ) ) {  // d.valueOf() could also work
+                    // date is valid
+                    dateTemp = Math.floor((Date.parse(dateKey) - Date.parse(event.time))/(1000*60*60*24));
+                }
+            }
+            if( dateTemp != null && Math.abs(dateTemp) > 2){
+                return false;
+            }
+            if ((locationKey != null) && !(event.location.indexOf(locationKey)!=-1) ){
+                return false;
+            }
+            if ((categoryKey != null) && (categoryKey !== event.category) ){
+                return false;
+            }
+            return true;
+        });
     }
-
   };
 })
 
@@ -237,12 +258,35 @@ angular.module('starter.services', [])
         }
       }
       return null;
+    },
+    search: function(dateKey, locationKey, categoryKey){
+        return events.filter( function(event){
+            var dateTemp = null;
+            if ( Object.prototype.toString.call(dateKey) === "[object Date]" ) {
+                // it is a date
+                if ( !isNaN( dateKey.getTime() ) ) {  // d.valueOf() could also work
+                    // date is valid
+                    dateTemp = Math.floor((Date.parse(dateKey) - Date.parse(event.time))/(1000*60*60*24));
+                }
+            }
+            if( dateTemp != null && Math.abs(dateTemp) > 2){
+                return false;
+            }
+            if ((locationKey != null) && !(event.location.indexOf(locationKey)!=-1) ){
+                return false;
+            }
+            if ((categoryKey != null) && (categoryKey !== event.category) ){
+                return false;
+            }
+            return true;
+        });
     }
+
   };
 })
 
 .factory('TimeToLocation', function(){
-    
+
     var distanceService = new google.maps.DistanceMatrixService();
 
     return {
@@ -256,7 +300,7 @@ angular.module('starter.services', [])
                 transitOptions: {arrivalTime: arrivalTime}
               }, function(data, stat){
                 callback(data, stat);
-              } 
+              }
             );
           },
 
@@ -272,7 +316,6 @@ angular.module('starter.services', [])
                 callback(data, stat);
               }
             );
-          }   
+          }
     }
 });
-
