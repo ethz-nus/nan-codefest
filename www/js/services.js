@@ -58,7 +58,7 @@ angular.module('starter.services', [])
       ioSocket.on('receiveActivities', function(activities){
         ioSocket.close();
         events = [];
-        for (var i=0; i<10; i++){
+        for (var i=0; i<activities[0].length; i++){
             var tempEvt = activities[0][i];
             events.push({
                 title: tempEvt.activityId,
@@ -80,7 +80,9 @@ angular.module('starter.services', [])
     get: function(eventId) {
       if(!events){
           promise = this.all()
-          promise.then(this.get(eventId));
+          promise.then(function(data){
+              this.get(eventId)
+          });
       } else {
         for (var i = 0; i < events.length; i++) {
           if (events[i].id === eventId) {
@@ -92,8 +94,10 @@ angular.module('starter.services', [])
     },
     search: function(dateKey, locationKey, categoryKey){
       if(!events){
-        promise = this.all()
-        promise.then(this.search(dateKey, locationKey, categoryKey));
+        promise = this.all();
+        promise.then(function(data){
+            this.search(dateKey, locationKey, categoryKey)
+        });
       } else {
         resultEvents = events.filter( function(event){
             var dateTemp = null;
