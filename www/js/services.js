@@ -58,17 +58,18 @@ angular.module('starter.services', [])
       ioSocket.emit('getActivities', {});
       ioSocket.on('receiveActivities', function(activities){
         ioSocket.close();
+
         for (var i=0; i<activities[0].length; i++){
             var tempEvt = activities[0][i];
-            events = [];
             events.push({
                 title: tempEvt.activityId,
-                time: new Date(tempEvt.startTime),
+                time: tempEvt.startTime,
                 pic: tempEvt.picUrl,
                 category: tempEvt.categories,
-                latitude: tempEvt.loc.latitude,
-                longitude: tempEvt.loc.longitude,
-                location: tempEvt.loc.formattedAddress
+                latitude: tempEvt.loc.longitude,
+                longitude: tempEvt.loc.latitude,
+                location: tempEvt.loc.formattedAdd,
+                id: tempEvt._id
             });
             resultEvents = events;
         }
@@ -83,7 +84,7 @@ angular.module('starter.services', [])
           promise.then(this.get(eventId));
       } else {
         for (var i = 0; i < events.length; i++) {
-          if (events[i].id === parseInt(eventId)) {
+          if (events[i].id === eventId) {
             return events[i];
           }
         }
@@ -123,13 +124,8 @@ angular.module('starter.services', [])
       observerCallbacks.push(callback);
     },
     resultEvents: function(){
-      var defer = $q.defer();
-        if(!resultEvents){
-            promise = this.all()
-            //
-        } else {
-            return defer.resolve(resultEvents);
-        }
+
+        return resultEvents;
     }
   }
 }])

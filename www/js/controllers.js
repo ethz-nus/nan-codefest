@@ -49,47 +49,47 @@ $( document ).ready(function() {
 
             // google.maps.event.addDomListener(window, 'load', initialize);
 
-            $scope.centerOnMe = function() {
-              if(!$scope.map) {
-                return;
-              }
 
-              $scope.loading = $ionicLoading.show({
-                content: 'Getting current location...',
-                showBackdrop: false
-              });
+      $scope.centerOnMe = function() {
+        if(!$scope.map) {
+          return;
+        }
 
-              navigator.geolocation.getCurrentPosition(function(pos) {
-                $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-                $scope.loading.hide();
-                var loc = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-                var pinColor = "387ef5";
-                var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
-                  new google.maps.Size(21, 34),
-                  new google.maps.Point(0,0),
-                  new google.maps.Point(10, 34));
-                var marker = new google.maps.Marker({
-                  position: loc,
-                  map: $scope.map,
-                  icon: pinImage
-                });
-                $scope.markers.push(marker);
+        $scope.loading = $ionicLoading.show({
+          content: 'Getting current location...',
+          showBackdrop: false
+        });
 
-              }, function(error) {
-                alert('Unable to get location: ' + error.message);
-              });
-            };
+        navigator.geolocation.getCurrentPosition(function(pos) {
+          $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+          $scope.loading.hide();
+          var loc = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+          var pinColor = "387ef5";
+          var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+            new google.maps.Size(21, 34),
+            new google.maps.Point(0,0),
+            new google.maps.Point(10, 34));
+          var marker = new google.maps.Marker({
+            position: loc,
+            map: $scope.map,
+            icon: pinImage
+          });
+          $scope.markers.push(marker);
 
-            $scope.clickMarker = function(id) {
-              evt = events[id];
-              $ionicPopup.alert({
-                title: evt.title,
-                template: evt.category + ' Event At ' + evt.time
-              });
-            };
+        }, function(error) {
+          alert('Unable to get location: ' + error.message);
+        });
+      };
 
-            $scope.markers = [];
+      $scope.clickMarker = function(id) {
+        evt = Activities.get(id);
+        $ionicPopup.alert({
+            title: evt.title,
+            template: evt.category + ' Event At ' + evt.time
+        });
+      };
 
+      $scope.markers = [];
 
       // Sets the map on all markers in the array.
       $scope.setAllMap = function(map) {
@@ -105,18 +105,30 @@ $( document ).ready(function() {
       var events;
 
       $scope.addEventMarkers = function(){
-        console.log(1);
         events = Activities.resultEvents();
-        console.log(events);
-        var bounds = new google.maps.LatLngBounds();
-        for (key in events){
+        if(!events){
+            promise = Activities.all();
+            promise.then(function(data){
+                console.log('all');
+                events = data;
+                doMapProcessing();
+            });
+        } else {
+            doMapProcessing();
+        }
+      };
+
+    function doMapProcessing(){
+      var bounds = new google.maps.LatLngBounds();
+      for (key in events){
           var evt = events[key];
+          console.log(evt);
           var loc = new google.maps.LatLng(evt.latitude, evt.longitude);
           var marker = new google.maps.Marker({
-            position: loc,
-            map: $scope.map,
-            title: evt.title,
-            id: evt.id
+              position: loc,
+              map: $scope.map,
+              title: evt.title,
+              id: evt.id
           });
 
           $scope.markers.push(marker);
@@ -127,6 +139,7 @@ $( document ).ready(function() {
           var compiled = $compile(contentString)($scope);
           var infowindow = new google.maps.InfoWindow({
             content: compiled[0]
+
           });
           infowindow.setContent(compiled[0]);
           infowindow.open($scope.map, this);
@@ -167,6 +180,7 @@ $( document ).ready(function() {
           alert('Unable to get location: ' + error.message);
         });
       }
+
 
       $scope.clearMarkers();
       $scope.addEventMarkers();
