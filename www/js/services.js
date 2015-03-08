@@ -231,6 +231,10 @@ angular.module('starter.services', [])
       return resultEvents;
     },
 
+    setResultEvent: function(event){
+      resultEvents = [event];
+    },
+
     quitEvent: function(targetEvent, userId){
       for(var i = 0; i < targetEvent.groups.length; i++){
         var group = targetEvent.groups[i];

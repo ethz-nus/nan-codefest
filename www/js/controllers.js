@@ -36,6 +36,7 @@ angular.module('starter.controllers',['ionic'])
 
         $scope.map = map;
       }
+
 		$( document ).ready(function() {
 			initialize();
 		});
@@ -67,6 +68,20 @@ angular.module('starter.controllers',['ionic'])
         });
       };
 
+      $scope.markers = [];
+
+
+      // Sets the map on all markers in the array.
+      $scope.setAllMap = function(map) {
+        for (var i = 0; i < $scope.markers.length; i++) {
+          $scope.markers[i].setMap(map);
+        }
+      };
+
+      $scope.clearMarkers = function(){
+        $scope.setAllMap(null);
+      };
+
       $scope.addEventMarkers = function(){
         var events = Events.resultEvents();
         var bounds = new google.maps.LatLngBounds();
@@ -79,6 +94,7 @@ angular.module('starter.controllers',['ionic'])
             title: evt.title,
             id: evt.id
           });
+          $scope.markers.push(marker);
           google.maps.event.addListener(marker, 'click', function() {
             var contentString = "<div><a ng-click='clickMarker(" + this.id
             + ")'>Click to know more about " + this.title + "</a></div>";
@@ -96,6 +112,7 @@ angular.module('starter.controllers',['ionic'])
 
     $scope.addEventMarkers();
     Events.registerObserverCallback(function(){
+      $scope.clearMarkers();
       $scope.addEventMarkers();
       console.log($scope.map);
     });
@@ -169,6 +186,7 @@ angular.module('starter.controllers',['ionic'])
   $scope.registeredGroup = Events.attendingGroup($scope.event, $scope.userId);
   $scope.selectedGroupIndex = $scope.registeredGroup? $scope.event.groups.indexOf($scope.registeredGroup) : -1;
 
+  Events.setResultEvent($scope.event);
 
   $scope.print = function(array){
     var str = ' ';
