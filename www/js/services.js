@@ -23,7 +23,7 @@ angular.module('starter.services', [])
     }
   };
 })
-.factory('Activities', ['$scope', '$rootScope', 'ioSocket', function($scope, $rootScope, ioSocket) {
+.factory('Activities', ['$q', '$scope', '$rootScope', 'ioSocket', function($q, $scope, $rootScope, ioSocket) {
   
   ioSocket.on('connected', function(data){
 

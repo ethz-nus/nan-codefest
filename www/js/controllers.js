@@ -277,11 +277,6 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
     result.then(function(val){
       window.location.href = "/#/tab/search";
     });
-    // console.log(result);
-    // if(result.status){
-      // console.log(window.location.href);
-      // window.location.href = ;
-    // }
   };
 }]);
 
