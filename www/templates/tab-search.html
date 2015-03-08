@@ -16,47 +16,35 @@
           </div>
       </div>
     </label>
-    <label class="item item-input item-stacked-label">
-      <div class="row">
-          <div class="col col-33"><p class="info-label">Category</p></div>
-          <div class="col col-67">
-          <select ng-model="search.category">
-            <option>Museum</option>
-            <option>Flower</option>
-            <option>Art</option>
-          </select>          
-        </div>
-      </div>
-    </label>
 
     <div id="category-list">
       <div class="row">
         <section class="col col-50">
-          <div class="all"><span class="ion-ios-circle-outline"></span>
+          <div class="all" ng-click="searchEvents(null)"><span class="ion-ios-circle-outline"></span>
             <br><p>All</p></div>
         </section>
         <section class="col col-50">
-          <div class="parade"><span class="ion-android-walk"></span>
+          <div class="parade" ng-click="searchEvents('Festival')"><span class="ion-android-walk"></span>
           <br><p>Parade</p></div>
         </section>
       </div>
       <div class="row">
         <section class="col col-50">
-          <div class="music"><span class="ion-music-note"></span>
+          <div class="music" ng-click="searchEvents('Music')"><span class="ion-music-note"></span>
             <br><p>Music</p></div>
           </section>
         <section class="col col-50">
-          <div class="museum"><span class="ion-ios-bookmarks"></span>
+          <div class="museum" ng-click="searchEvents('Museum')"><span class="ion-ios-bookmarks"></span>
           <br><p>Museum</p></div>
         </section>
       </div>
       <div class="row">
         <section class="col col-50">
-          <div class="sports" ><span class="ion-ios-football"></span>
+          <div class="sports" ng-click="searchEvents('Sports')"><span class="ion-ios-football"></span>
           <br><p>Sports</p></div>
         </section>
         <section class="col col-50">
-          <div class="flower" ><span class="ion-ios-flower"></span>
+          <div class="flower" ng-click="searchEvents('Flowers')"><span class="ion-ios-flower"></span>
           <br><p>Flowers</p></div>
         </section>
       </div>

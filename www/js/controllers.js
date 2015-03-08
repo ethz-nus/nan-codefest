@@ -60,15 +60,15 @@ angular.module('starter.controllers',['ionic'])
       };
 
       $scope.clickMarker = function(id) {
-	    evt = Events.all()[id];
+	    evt = Events.resultEvents()[id];
         $ionicPopup.alert({
             title: evt.title,
             template: evt.category + ' Event At ' + evt.time
         });
       };
 
-      $scope.addEventMarkers = function(){ 
-        var events = Events.all();
+      $scope.addEventMarkers = function(){
+        var events = Events.resultEvents();
         var bounds = new google.maps.LatLngBounds();
         for (key in events){
           var evt = events[key];
@@ -92,43 +92,39 @@ angular.module('starter.controllers',['ionic'])
           bounds.extend(loc);
         }
         $scope.map.fitBounds(bounds);
-      }
+      };
 
     $scope.addEventMarkers();
+    Events.registerObserverCallback(function(){
+      $scope.addEventMarkers();
+      console.log($scope.map);
+    });
     // $scope.centerOnMe();
 })
 
-.controller('SearchCtrl', function($scope, Events, AccountManager){
-      $("ion-nav-bar").show();
+.controller('SearchCtrl', function($scope, $state, Events, AccountManager){
 
     $scope.userId = AccountManager.getUserId();
     $scope.events = Events.all();
-    $scope.search = {
-      date: new Date(),
-      location: ''
+    $scope.search ={
+      date: null,
+      location: null
+    }
+
+    $scope.searchEvents = function(category){
+        $state.go('tab.search-result',{
+            date: $scope.search.date,
+            location: $scope.search.location, 
+            category: category
+        });
     };
 
-    $scope.searchEvents = function(){
-      $scope.filteredEvents = $scope.events.filter( function(event){
-          var dateTemp = null;
-          if ( Object.prototype.toString.call($scope.search.date) === "[object Date]" ) {
-            // it is a date
-            if ( !isNaN( $scope.search.date.getTime() ) ) {  // d.valueOf() could also work
-              // date is valid
-               dateTemp = new Date(Date.parse($scope.search.date) - Date.parse(event.time));
-            }
-          }
-          if( dateTemp != null && dateTemp.getDate() - 1 != 0)
-            return false;
-          else if ($scope.location !=null && (!$scope.search.location.indexOf(event.location) ||  !event.location.indexOf($scope.search.location)) )
-            return false;
-          // else if ( $scope.category  && ($scope.search.catalog != event.catalog) )
-          //   return false;
-          else return true;
-        });
-      window.location.href = "#/tab/results";
-      console.log($scope.filteredEvents);
-    }
+})
+
+
+.controller('SearchResultsCtrl', function($scope, $stateParams, Events) {
+
+    $scope.events = Events.search($stateParams.date, $stateParams.location, $stateParams.category);
 
     $scope.isAttending = function(event){
       return Events.isAttending(event, $scope.userId);
@@ -146,7 +142,7 @@ angular.module('starter.controllers',['ionic'])
   $scope.events = Events.allAttending($scope.userId);
 
   $scope.remove = function(event) {
-    AttendingEvents.remove(event);
+    Events.remove(event);
   };
 
   $scope.sortByTime = function(){
@@ -282,4 +278,6 @@ angular.module('starter.controllers',['ionic'])
 
 .controller('WelcomeCtrl', function($scope){
     $("ion-nav-bar").hide();
+
 });
+
