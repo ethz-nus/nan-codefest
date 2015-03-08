@@ -191,6 +191,8 @@ $( document ).ready(function() {
   })
 
 .controller('SearchCtrl', function($scope, $state, Activities, Events){
+    $("ion-nav-bar").show();
+
     $scope.search ={
       date: null,
       location: null
@@ -211,6 +213,7 @@ $( document ).ready(function() {
     // var dates = generate_free_start_times(12 * 60 * 60 * 1000, 24 * 60 * 60 * 1000, 15);
 
     $scope.searchEvents = function(category){
+      console.log($scope.search.date);
       $state.go('tab.search-result',{
         date: $scope.search.date,
         location: $scope.search.location,

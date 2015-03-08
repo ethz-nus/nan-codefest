@@ -62,7 +62,7 @@ angular.module('starter.services', [])
               var tempEvt = activities[0][i];
               events.push({
                   title: tempEvt.activityId,
-                  time: tempEvt.startTime,
+                  time: new Date(tempEvt.startTime),
                   pic: tempEvt.picUrl,
                   category: tempEvt.categories,
                   latitude: tempEvt.loc.longitude,
@@ -71,6 +71,7 @@ angular.module('starter.services', [])
                   id: tempEvt._id
               });
               resultEvents = events;
+
           }
           return defer.resolve(events);
       });
@@ -447,7 +448,7 @@ angular.module('starter.services', [])
             if( dateTemp != null && Math.abs(dateTemp) > 4){
                 return false;
             }
-            if ((locationKey != null) && !(event.location.indexOf(locationKey)!=-1) ){
+            if ((locationKey != null) && !(event.location.toLowerCase().indexOf(locationKey.toLowerCase())!=-1) ){
                 return false;
             }
             if ((categoryKey != null) && (categoryKey !== event.category) ){
