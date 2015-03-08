@@ -101,11 +101,10 @@ angular.module('starter.controllers',['ionic'])
     $scope.events = Events.all();
     $scope.search = {
       date: new Date(),
-      location: ''
+      location: 'foo'
     };
 
     $scope.search = function(){
-
       $scope.filteredEvents = $scope.events.filter( function(event){
           var dateTemp = null;
           if ( Object.prototype.toString.call($scope.search.date) === "[object Date]" ) {

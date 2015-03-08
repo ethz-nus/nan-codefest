@@ -29,8 +29,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   // Each state's controller can be found in controllers.js
   $stateProvider
 
+  .state('welcome', {
+    url: "/welcome",
+    templateUrl: "templates/welcome.html"
+  })
+
   // setup an abstract state for the tabs directive
-    .state('tab', {
+  .state('tab', {
     url: "/tab",
     abstract: true,
     templateUrl: "templates/tabs.html"
@@ -72,7 +77,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     url: '/results/:eventId',
     views: {
       'tab-search': {
-        templateUrl: 'templates/result-detail.html',
+        templateUrl: 'templates/event-detail.html',
         controller: 'EventDetailCtrl'
       }
     }
@@ -119,6 +124,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/map');
+  $urlRouterProvider.otherwise('/welcome');
 
 });

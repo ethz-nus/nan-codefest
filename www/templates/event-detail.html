@@ -17,7 +17,7 @@
       </p>
       </article>
 
-      
+
       <ion-list>
       <ion-item class="item-remove-animate item-icon-right group-list" ng-repeat="group in event.groups track by $index" type="item-text-wrap" href="#/tab/results/{{event.id}}">
         <!-- <img ng-src="{{event.pic}}"></img> -->
@@ -27,7 +27,11 @@
           <span class="ion-android-car col col-10 tag" ng-if="group.transport=='private' "></span>
 
           <p class="col col-80"><span>Buddies: </span>{{print(group.users)}}</p>
-      </div>
+        </div>
+        <section class="group-info">
+          <p ng-if="group.location"><span class="ion-ios-location"></span>{{group.location}}<span class="ion-clock"></span>Meet at {{group.time | date: 'h:mma'}}</p>
+          <p ng-if="group.contact"><span class="ion-ios-telephone"></span>{{group.contact}}</p>
+        </section>
       <div>
         <p class="icon small" ng-if="$index==selectedGroupIndex">Joined</p>
         <i class="icon ion-ios-checkmark-outline green" ng-click="register($index, group)" ng-if="group.owner != userId && $index!=selectedGroupIndex" ></i>

@@ -53,7 +53,10 @@ angular.module('starter.services', [])
     groups: [{
       owner: 'Kin',
       transport:'private',
-      users:['Kin', 'Mark', 'Alex']
+      users:['Kin', 'Mark', 'Alex'],
+      location:"Oerlikon",
+      time: new Date("April 13, 2015 10:00:00"),
+      contact:"9457227"
     }],
 
   }, {
