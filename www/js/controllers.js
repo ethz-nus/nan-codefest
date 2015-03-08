@@ -81,7 +81,7 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
       };
 
       $scope.clickMarker = function(id) {
-        evt = events[id];
+        evt = Activities.get(id);
         $ionicPopup.alert({
             title: evt.title,
             template: evt.category + ' Event At ' + evt.time
@@ -105,43 +105,56 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
       var events;
 
       $scope.addEventMarkers = function(){
-        console.log(1);
         events = Activities.resultEvents();
-        console.log(events);
-        var bounds = new google.maps.LatLngBounds();
-        for (key in events){
+        if(!events){
+            promise = Activities.all();
+            promise.then(function(data){
+                console.log('all');
+                events = data;
+                doMapProcessing();
+            });
+        } else {
+            doMapProcessing();
+        }
+      };
+
+    function doMapProcessing(){
+      var bounds = new google.maps.LatLngBounds();
+      console.log(events);
+      for (key in events){
           var evt = events[key];
+          console.log(evt);
           var loc = new google.maps.LatLng(evt.latitude, evt.longitude);
           var marker = new google.maps.Marker({
-            position: loc,
-            map: $scope.map,
-            title: evt.title,
-            id: evt.id
+              position: loc,
+              map: $scope.map,
+              title: evt.title,
+              id: evt.id
           });
 
           $scope.markers.push(marker);
 
           google.maps.event.addListener(marker, 'click', function() {
-            var contentString = "<div><a ng-click='clickMarker(" + this.id
-            + ")'>Click to know more about " + this.title + "</a></div>";
-            var compiled = $compile(contentString)($scope);
-            var infowindow = new google.maps.InfoWindow({
-                content: compiled[0]
-            });
-            infowindow.setContent(compiled[0]);
-            infowindow.open($scope.map, this);
+              var contentString = "<div><a ng-click='clickMarker(" + this.id
+              + ")'>Click to know more about " + this.title + "</a></div>";
+              var compiled = $compile(contentString)($scope);
+              var infowindow = new google.maps.InfoWindow({
+                  content: compiled[0]
+              });
+              infowindow.setContent(compiled[0]);
+              infowindow.open($scope.map, this);
           });
           bounds.extend(loc);
-        }
-        var listener1 = google.maps.event.addListener($scope.map, "idle", function() {
-            $scope.map.fitBounds(bounds);
-            google.maps.event.removeListener(listener1);
-        });
-        var listener2 = google.maps.event.addListener($scope.map, "idle", function() {
-            if ($scope.map.getZoom() > 16) $scope.map.setZoom(16);
-            google.maps.event.removeListener(listener2);
-        });
-      };
+      }
+      var listener1 = google.maps.event.addListener($scope.map, "idle", function() {
+          $scope.map.fitBounds(bounds);
+          google.maps.event.removeListener(listener1);
+      });
+      var listener2 = google.maps.event.addListener($scope.map, "idle", function() {
+          if ($scope.map.getZoom() > 16) $scope.map.setZoom(16);
+          google.maps.event.removeListener(listener2);
+      });
+    }
 
       $scope.setGeoMarker = function(){
         var pinColor = "387ef5";
@@ -170,6 +183,7 @@ angular.module('starter.controllers',['ionic', 'googleApi'])
 
     $scope.clearMarkers();
     $scope.addEventMarkers();
+
     Activities.registerObserverCallback(function(){
       $scope.clearMarkers();
       $scope.addEventMarkers();
